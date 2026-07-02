@@ -1320,8 +1320,9 @@ html {
   }
 
   .application-section {
-    position: sticky;
-    top: var(--header-height);
+    position: relative;
+    top: auto;
+    height: calc(100svh - var(--header-height));
     min-height: calc(100svh - var(--header-height));
     isolation: isolate;
   }
@@ -1480,8 +1481,8 @@ html {
 
 
   .application-section {
-    position: sticky;
-    top: var(--header-height);
+    position: relative;
+    top: auto;
     align-items: center;
     justify-content: center;
     height: calc(100svh - var(--header-height));
