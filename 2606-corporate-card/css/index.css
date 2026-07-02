@@ -1319,6 +1319,11 @@ html {
     scroll-snap-type: none;
   }
 
+  .application-section {
+    position: relative;
+    top: auto;
+  }
+
   .hero-section {
     min-height: calc(100dvh - var(--header-height));
     padding: 48px 24px 88px;
@@ -1356,7 +1361,12 @@ html {
   }
 
   .solution-card-visual {
+    z-index: 0;
     min-height: 320px;
+  }
+
+  .solution-table-card {
+    z-index: 0;
   }
 
   .solution-feature-sticky {
@@ -1464,8 +1474,8 @@ html {
 
 
   .application-section {
-    position: sticky;
-    top: var(--header-height);
+    position: relative;
+    top: auto;
     align-items: center;
     justify-content: center;
     height: calc(100dvh - var(--header-height));
