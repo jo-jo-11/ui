@@ -1322,6 +1322,12 @@ html {
   .application-section {
     position: relative;
     top: auto;
+    min-height: calc(100svh - var(--header-height));
+    isolation: isolate;
+  }
+
+  .application-section + .application-section {
+    margin-top: -12svh;
   }
 
   .hero-section {
@@ -1478,8 +1484,8 @@ html {
     top: auto;
     align-items: center;
     justify-content: center;
-    height: calc(100dvh - var(--header-height));
-    min-height: calc(100dvh - var(--header-height));
+    height: calc(100svh - var(--header-height));
+    min-height: calc(100svh - var(--header-height));
     padding: 24px 20px;
     box-shadow: none;
   }
