@@ -1332,7 +1332,8 @@ html {
   }
 
   .hero-section {
-    min-height: calc(100dvh - var(--header-height));
+    height: calc(100svh - var(--header-height));
+    min-height: calc(100svh - var(--header-height));
     padding: 48px 24px 88px;
     background-image: url("../assets/img/hero-card-ipad.webp");
   }
@@ -1386,7 +1387,8 @@ html {
 /* 手機版 */
 @media (max-width: 560px) {
   .hero-section {
-    min-height: calc(100dvh - var(--header-height));
+    height: calc(100svh - var(--header-height));
+    min-height: calc(100svh - var(--header-height));
     padding: 40px 20px 84px;
     background-image: url("../assets/img/hero-card-iphone.webp");
   }
