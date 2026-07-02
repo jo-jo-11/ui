@@ -438,7 +438,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // FAQ 展開收合：點問題時切換 aria-expanded 與 hidden，讓鍵盤與螢幕閱讀器也能理解狀態。
+  // FAQ 手風琴：第一題預設展開；點收合題目會只打開該題，點已展開題目則可收起。
   faqQuestions.forEach((question) => {
     question.addEventListener("click", () => {
       const answerId = question.getAttribute("aria-controls");
@@ -449,8 +449,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      question.setAttribute("aria-expanded", String(!isOpen));
-      answer.hidden = isOpen;
+      faqQuestions.forEach((currentQuestion) => {
+        const currentAnswerId = currentQuestion.getAttribute("aria-controls");
+        const currentAnswer = currentAnswerId ? document.getElementById(currentAnswerId) : null;
+        const shouldOpen = currentQuestion === question && !isOpen;
+
+        currentQuestion.setAttribute("aria-expanded", String(shouldOpen));
+
+        if (currentAnswer) {
+          currentAnswer.hidden = !shouldOpen;
+        }
+      });
     });
   });
 });
