@@ -209,34 +209,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 手機版應用場景整屏切換：滑動一次切換一個應用場景，滑完第三屏後再進入解決方案。
+  // 手機版 fullPage 整屏切換：從首屏到解決方案表格，一次滑動只切換一個完整畫面。
   if (applicationSections.length) {
-    const mobileApplicationQuery = window.matchMedia("(max-width: 900px)");
+    const mobileFullPageQuery = window.matchMedia("(max-width: 900px)");
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const applicationFullPageSections = [
+    const mobileFullPageSections = [
+      document.querySelector(".hero-section"),
       ...applicationSections,
       document.querySelector("#solutions"),
+      document.querySelector("#solutions-2"),
     ].filter(Boolean);
     let touchStartY = null;
-    let isApplicationPaging = false;
-    let applicationPagingTimer = null;
+    let isMobileFullPageScrolling = false;
+    let mobileFullPageTimer = null;
 
     const getHeaderOffset = () => siteHeader?.offsetHeight || 0;
 
-    const getClosestApplicationPageIndex = () => {
+    const getClosestMobileFullPageIndex = () => {
       const currentTop = window.scrollY + getHeaderOffset();
 
-      return applicationFullPageSections.reduce((closestIndex, section, index) => {
-        const currentDistance = Math.abs(applicationFullPageSections[closestIndex].offsetTop - currentTop);
+      return mobileFullPageSections.reduce((closestIndex, section, index) => {
+        const currentDistance = Math.abs(mobileFullPageSections[closestIndex].offsetTop - currentTop);
         const nextDistance = Math.abs(section.offsetTop - currentTop);
 
         return nextDistance < currentDistance ? index : closestIndex;
       }, 0);
     };
 
-    const isNearApplicationPages = () => {
-      const firstSection = applicationFullPageSections[0];
-      const lastSection = applicationFullPageSections[applicationFullPageSections.length - 1];
+    const isInMobileFullPageRange = () => {
+      const firstSection = mobileFullPageSections[0];
+      const lastSection = mobileFullPageSections[mobileFullPageSections.length - 1];
 
       if (!firstSection || !lastSection) {
         return false;
@@ -244,45 +246,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const headerOffset = getHeaderOffset();
       const currentTop = window.scrollY + headerOffset;
-      const start = firstSection.offsetTop - window.innerHeight * 0.35;
-      const end = lastSection.offsetTop + lastSection.offsetHeight + window.innerHeight * 0.25;
+      const start = firstSection.offsetTop - 4;
+      const end = lastSection.offsetTop + lastSection.offsetHeight + window.innerHeight * 0.18;
 
       return currentTop >= start && currentTop <= end;
     };
 
-    const scrollToApplicationPage = (index) => {
-      const nextIndex = Math.max(0, Math.min(index, applicationFullPageSections.length - 1));
-      const targetSection = applicationFullPageSections[nextIndex];
+    const scrollToMobileFullPage = (index) => {
+      const nextIndex = Math.max(0, Math.min(index, mobileFullPageSections.length - 1));
+      const targetSection = mobileFullPageSections[nextIndex];
 
       if (!targetSection) {
         return;
       }
 
-      isApplicationPaging = true;
-      window.clearTimeout(applicationPagingTimer);
+      isMobileFullPageScrolling = true;
+      window.clearTimeout(mobileFullPageTimer);
       window.scrollTo({
         top: Math.max(targetSection.offsetTop - getHeaderOffset(), 0),
         behavior: reducedMotionQuery.matches ? "auto" : "smooth",
       });
 
-      applicationPagingTimer = window.setTimeout(() => {
-        isApplicationPaging = false;
+      mobileFullPageTimer = window.setTimeout(() => {
+        isMobileFullPageScrolling = false;
       }, 720);
     };
 
-    const handleApplicationPageMove = (direction) => {
-      if (!mobileApplicationQuery.matches || reducedMotionQuery.matches || isApplicationPaging || !isNearApplicationPages()) {
+    const handleMobileFullPageMove = (direction) => {
+      const isNavOpen = navToggle?.getAttribute("aria-expanded") === "true";
+
+      if (!mobileFullPageQuery.matches || reducedMotionQuery.matches || isMobileFullPageScrolling || isNavOpen || !isInMobileFullPageRange()) {
         return false;
       }
 
-      const activeIndex = getClosestApplicationPageIndex();
+      const activeIndex = getClosestMobileFullPageIndex();
       const nextIndex = activeIndex + direction;
 
-      if (nextIndex < 0 || nextIndex >= applicationFullPageSections.length) {
+      if (nextIndex < 0 || nextIndex >= mobileFullPageSections.length) {
         return false;
       }
 
-      scrollToApplicationPage(nextIndex);
+      scrollToMobileFullPage(nextIndex);
       return true;
     };
 
@@ -291,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (handleApplicationPageMove(event.deltaY > 0 ? 1 : -1)) {
+      if (handleMobileFullPageMove(event.deltaY > 0 ? 1 : -1)) {
         event.preventDefault();
       }
     }, { passive: false });
@@ -299,6 +303,24 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("touchstart", (event) => {
       touchStartY = event.touches[0]?.clientY ?? null;
     }, { passive: true });
+
+    window.addEventListener("touchmove", (event) => {
+      if (touchStartY === null) {
+        return;
+      }
+
+      const touchCurrentY = event.touches[0]?.clientY ?? touchStartY;
+      const deltaY = touchStartY - touchCurrentY;
+
+      if (Math.abs(deltaY) < 44) {
+        return;
+      }
+
+      if (handleMobileFullPageMove(deltaY > 0 ? 1 : -1)) {
+        event.preventDefault();
+        touchStartY = touchCurrentY;
+      }
+    }, { passive: false });
 
     window.addEventListener("touchend", (event) => {
       if (touchStartY === null) {
@@ -313,7 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (handleApplicationPageMove(deltaY > 0 ? 1 : -1)) {
+      if (handleMobileFullPageMove(deltaY > 0 ? 1 : -1)) {
         event.preventDefault();
       }
     }, { passive: false });
