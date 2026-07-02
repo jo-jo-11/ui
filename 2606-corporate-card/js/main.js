@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const navBackdrop = document.querySelector(".nav-backdrop");
   const navLinks = document.querySelectorAll(".site-nav a:not(.nav-cta)");
   const snapSections = Array.from(document.querySelectorAll(".page-section"));
+  const applicationSections = Array.from(document.querySelectorAll(".application-section"));
   const faqQuestions = document.querySelectorAll(".faq-question");
   const featureScrollSection = document.querySelector("[data-feature-scroll]");
   const ctaSection = document.querySelector(".cta-section");
@@ -206,6 +207,116 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", () => {
       activeSnapIndex = getClosestSectionIndex();
     });
+  }
+
+  // 手機版應用場景整屏切換：滑動一次切換一個應用場景，滑完第三屏後再進入解決方案。
+  if (applicationSections.length) {
+    const mobileApplicationQuery = window.matchMedia("(max-width: 900px)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const applicationFullPageSections = [
+      ...applicationSections,
+      document.querySelector("#solutions"),
+    ].filter(Boolean);
+    let touchStartY = null;
+    let isApplicationPaging = false;
+    let applicationPagingTimer = null;
+
+    const getHeaderOffset = () => siteHeader?.offsetHeight || 0;
+
+    const getClosestApplicationPageIndex = () => {
+      const currentTop = window.scrollY + getHeaderOffset();
+
+      return applicationFullPageSections.reduce((closestIndex, section, index) => {
+        const currentDistance = Math.abs(applicationFullPageSections[closestIndex].offsetTop - currentTop);
+        const nextDistance = Math.abs(section.offsetTop - currentTop);
+
+        return nextDistance < currentDistance ? index : closestIndex;
+      }, 0);
+    };
+
+    const isNearApplicationPages = () => {
+      const firstSection = applicationFullPageSections[0];
+      const lastSection = applicationFullPageSections[applicationFullPageSections.length - 1];
+
+      if (!firstSection || !lastSection) {
+        return false;
+      }
+
+      const headerOffset = getHeaderOffset();
+      const currentTop = window.scrollY + headerOffset;
+      const start = firstSection.offsetTop - window.innerHeight * 0.35;
+      const end = lastSection.offsetTop + lastSection.offsetHeight + window.innerHeight * 0.25;
+
+      return currentTop >= start && currentTop <= end;
+    };
+
+    const scrollToApplicationPage = (index) => {
+      const nextIndex = Math.max(0, Math.min(index, applicationFullPageSections.length - 1));
+      const targetSection = applicationFullPageSections[nextIndex];
+
+      if (!targetSection) {
+        return;
+      }
+
+      isApplicationPaging = true;
+      window.clearTimeout(applicationPagingTimer);
+      window.scrollTo({
+        top: Math.max(targetSection.offsetTop - getHeaderOffset(), 0),
+        behavior: reducedMotionQuery.matches ? "auto" : "smooth",
+      });
+
+      applicationPagingTimer = window.setTimeout(() => {
+        isApplicationPaging = false;
+      }, 720);
+    };
+
+    const handleApplicationPageMove = (direction) => {
+      if (!mobileApplicationQuery.matches || reducedMotionQuery.matches || isApplicationPaging || !isNearApplicationPages()) {
+        return false;
+      }
+
+      const activeIndex = getClosestApplicationPageIndex();
+      const nextIndex = activeIndex + direction;
+
+      if (nextIndex < 0 || nextIndex >= applicationFullPageSections.length) {
+        return false;
+      }
+
+      scrollToApplicationPage(nextIndex);
+      return true;
+    };
+
+    window.addEventListener("wheel", (event) => {
+      if (Math.abs(event.deltaY) < 18 || Math.abs(event.deltaY) < Math.abs(event.deltaX)) {
+        return;
+      }
+
+      if (handleApplicationPageMove(event.deltaY > 0 ? 1 : -1)) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+
+    window.addEventListener("touchstart", (event) => {
+      touchStartY = event.touches[0]?.clientY ?? null;
+    }, { passive: true });
+
+    window.addEventListener("touchend", (event) => {
+      if (touchStartY === null) {
+        return;
+      }
+
+      const touchEndY = event.changedTouches[0]?.clientY ?? touchStartY;
+      const deltaY = touchStartY - touchEndY;
+      touchStartY = null;
+
+      if (Math.abs(deltaY) < 44) {
+        return;
+      }
+
+      if (handleApplicationPageMove(deltaY > 0 ? 1 : -1)) {
+        event.preventDefault();
+      }
+    }, { passive: false });
   }
 
   // 解決方案 3 圖片拆解動畫：依照滾動進度切換 data-step，讓圖片一張張出現或疊加。
