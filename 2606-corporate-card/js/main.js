@@ -1,0 +1,456 @@
+"use strict";
+
+document.addEventListener("DOMContentLoaded", () => {
+  // 頁面共用元素：先集中抓取 DOM，後面每個互動效果會依是否存在再啟用。
+  const currentYear = new Date().getFullYear();
+  const footerYear = document.querySelector(".footer-year");
+  const siteHeader = document.querySelector(".site-header");
+  const navToggle = document.querySelector(".nav-toggle");
+  const siteNav = document.querySelector(".site-nav");
+  const navBackdrop = document.querySelector(".nav-backdrop");
+  const navLinks = document.querySelectorAll(".site-nav a:not(.nav-cta)");
+  const snapSections = Array.from(document.querySelectorAll(".page-section"));
+  const faqQuestions = document.querySelectorAll(".faq-question");
+  const featureScrollSection = document.querySelector("[data-feature-scroll]");
+  const ctaSection = document.querySelector(".cta-section");
+  const videoButtons = document.querySelectorAll("[data-video-id]");
+  const videoModal = document.querySelector("[data-video-modal]");
+  const videoFrame = document.querySelector("[data-video-frame]");
+  const videoCloseButtons = document.querySelectorAll("[data-video-close]");
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  const isIndexPage = currentPage === "index.html";
+  let lastScrollY = window.scrollY;
+
+  // 頁尾年份：自動填入今年年份，避免每年手動改 footer 版權年份。
+  if (footerYear) {
+    footerYear.textContent = currentYear;
+  }
+
+  // 手機版導覽選單：點擊漢堡按鈕開關選單，點背景、按 Esc 或切回桌機尺寸時關閉。
+  if (navToggle && siteNav) {
+    const closeNav = () => {
+      navToggle.setAttribute("aria-expanded", "false");
+      navToggle.setAttribute("aria-label", "開啟導覽選單");
+      siteNav.classList.remove("is-open");
+      document.body.classList.remove("is-nav-open");
+
+      if (navBackdrop) {
+        navBackdrop.hidden = true;
+      }
+    };
+
+    navToggle.addEventListener("click", () => {
+      const isOpen = navToggle.getAttribute("aria-expanded") === "true";
+
+      navToggle.setAttribute("aria-expanded", String(!isOpen));
+      navToggle.setAttribute("aria-label", isOpen ? "開啟導覽選單" : "關閉導覽選單");
+      siteNav.classList.toggle("is-open", !isOpen);
+      document.body.classList.toggle("is-nav-open", !isOpen);
+
+      if (navBackdrop) {
+        navBackdrop.hidden = isOpen;
+      }
+    });
+
+    siteNav.addEventListener("click", (event) => {
+      if (event.target.closest("a")) {
+        closeNav();
+      }
+    });
+
+    if (navBackdrop) {
+      navBackdrop.addEventListener("click", closeNav);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeNav();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.matchMedia("(min-width: 769px)").matches) {
+        closeNav();
+      }
+    });
+  }
+
+  // 非首頁 header 滾動效果：往下捲隱藏 header，往上捲顯示，讓內容頁閱讀空間更大。
+  if (siteHeader && !isIndexPage) {
+    window.addEventListener("scroll", () => {
+      const currentScrollY = window.scrollY;
+      const isNavOpen = navToggle?.getAttribute("aria-expanded") === "true";
+      const scrollDistance = currentScrollY - lastScrollY;
+
+      if (isNavOpen || currentScrollY < 12) {
+        siteHeader.classList.remove("is-hidden");
+        lastScrollY = currentScrollY;
+        return;
+      }
+
+      if (Math.abs(scrollDistance) < 8) {
+        return;
+      }
+
+      siteHeader.classList.toggle("is-hidden", scrollDistance > 0);
+      lastScrollY = currentScrollY;
+    }, { passive: true });
+  }
+
+  // 內容頁分屏滾動：桌機用滑鼠滾輪或鍵盤上下鍵，一次移動到下一個主要 section。
+  if (snapSections.length > 1 && !isIndexPage) {
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktopQuery = window.matchMedia("(min-width: 901px)");
+    let activeSnapIndex = 0;
+    let isSnapScrolling = false;
+    let snapReleaseTimer = null;
+
+    const getHeaderOffset = () => siteHeader?.offsetHeight || 0;
+
+    const getClosestSectionIndex = () => {
+      const headerOffset = getHeaderOffset();
+      const currentTop = window.scrollY + headerOffset;
+
+      return snapSections.reduce((closestIndex, section, index) => {
+        const currentDistance = Math.abs(snapSections[closestIndex].offsetTop - currentTop);
+        const nextDistance = Math.abs(section.offsetTop - currentTop);
+
+        return nextDistance < currentDistance ? index : closestIndex;
+      }, 0);
+    };
+
+    const releaseSnapLock = () => {
+      window.clearTimeout(snapReleaseTimer);
+      snapReleaseTimer = window.setTimeout(() => {
+        isSnapScrolling = false;
+        activeSnapIndex = getClosestSectionIndex();
+      }, 820);
+    };
+
+    const scrollToSnapSection = (index) => {
+      const nextIndex = Math.max(0, Math.min(index, snapSections.length - 1));
+      const targetSection = snapSections[nextIndex];
+
+      if (!targetSection) {
+        return;
+      }
+
+      activeSnapIndex = nextIndex;
+      isSnapScrolling = true;
+
+      const targetTop = Math.max(targetSection.offsetTop - getHeaderOffset(), 0);
+
+      window.scrollTo({
+        top: targetTop,
+        behavior: reducedMotionQuery.matches ? "auto" : "smooth",
+      });
+
+      releaseSnapLock();
+    };
+
+    window.addEventListener("wheel", (event) => {
+      const isNavOpen = navToggle?.getAttribute("aria-expanded") === "true";
+
+      if (!desktopQuery.matches || reducedMotionQuery.matches || isNavOpen) {
+        return;
+      }
+
+      if (Math.abs(event.deltaY) < 16 || Math.abs(event.deltaY) < Math.abs(event.deltaX)) {
+        return;
+      }
+
+      event.preventDefault();
+
+      if (isSnapScrolling) {
+        return;
+      }
+
+      activeSnapIndex = getClosestSectionIndex();
+      scrollToSnapSection(activeSnapIndex + (event.deltaY > 0 ? 1 : -1));
+    }, { passive: false });
+
+    document.addEventListener("keydown", (event) => {
+      const isNavOpen = navToggle?.getAttribute("aria-expanded") === "true";
+      const keyMap = {
+        ArrowDown: 1,
+        PageDown: 1,
+        ArrowUp: -1,
+        PageUp: -1,
+      };
+
+      if (!desktopQuery.matches || reducedMotionQuery.matches || isNavOpen) {
+        return;
+      }
+
+      if (event.key === "Home") {
+        event.preventDefault();
+        scrollToSnapSection(0);
+        return;
+      }
+
+      if (event.key === "End") {
+        event.preventDefault();
+        scrollToSnapSection(snapSections.length - 1);
+        return;
+      }
+
+      if (!Object.prototype.hasOwnProperty.call(keyMap, event.key)) {
+        return;
+      }
+
+      event.preventDefault();
+      activeSnapIndex = getClosestSectionIndex();
+      scrollToSnapSection(activeSnapIndex + keyMap[event.key]);
+    });
+
+    window.addEventListener("resize", () => {
+      activeSnapIndex = getClosestSectionIndex();
+    });
+  }
+
+  // 解決方案 3 圖片拆解動畫：依照滾動進度切換 data-step，讓圖片一張張出現或疊加。
+  if (featureScrollSection) {
+    const totalSteps = 8;
+    let activeFeatureStep = -1;
+    let featureFrameId = null;
+    let isFeatureStepScrolling = false;
+
+    const getFeatureScrollableDistance = () => featureScrollSection.offsetHeight - window.innerHeight;
+
+    const setFeatureStep = (step, shouldSyncScroll = false) => {
+      const nextStep = Math.max(0, Math.min(step, totalSteps - 1));
+
+      if (nextStep !== activeFeatureStep) {
+        activeFeatureStep = nextStep;
+        featureScrollSection.dataset.step = String(nextStep);
+      }
+
+      if (!shouldSyncScroll) {
+        return;
+      }
+
+      const scrollableDistance = getFeatureScrollableDistance();
+      const targetTop = featureScrollSection.offsetTop + (scrollableDistance * (nextStep / (totalSteps - 1)));
+
+      isFeatureStepScrolling = true;
+      window.scrollTo({
+        top: targetTop,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      });
+
+      window.setTimeout(() => {
+        isFeatureStepScrolling = false;
+      }, 420);
+    };
+
+    const updateFeatureStepFromScroll = () => {
+      featureFrameId = null;
+
+      if (isFeatureStepScrolling) {
+        return;
+      }
+
+      const scrollableDistance = getFeatureScrollableDistance();
+      const scrolledDistance = window.scrollY - featureScrollSection.offsetTop;
+      const rawProgress = scrollableDistance > 0 ? scrolledDistance / scrollableDistance : 0;
+      const progress = Math.min(Math.max(rawProgress, 0), 1);
+      const nextStep = Math.round(progress * (totalSteps - 1));
+
+      setFeatureStep(nextStep);
+    };
+
+    const requestFeatureUpdate = () => {
+      if (featureFrameId !== null) {
+        return;
+      }
+
+      featureFrameId = window.requestAnimationFrame(updateFeatureStepFromScroll);
+    };
+
+    const handleFeatureWheel = (event) => {
+      const sectionRect = featureScrollSection.getBoundingClientRect();
+      const isInsideFeature = sectionRect.top <= 1 && sectionRect.bottom >= window.innerHeight - 1;
+      const isScrollingDown = event.deltaY > 0;
+      const isScrollingUp = event.deltaY < 0;
+      const canStepDown = activeFeatureStep < totalSteps - 1;
+      const canStepUp = activeFeatureStep > 0;
+
+      if (!isInsideFeature || Math.abs(event.deltaY) < 12 || Math.abs(event.deltaY) < Math.abs(event.deltaX)) {
+        return;
+      }
+
+      if ((isScrollingDown && !canStepDown) || (isScrollingUp && !canStepUp)) {
+        return;
+      }
+
+      event.preventDefault();
+
+      if (isFeatureStepScrolling) {
+        return;
+      }
+
+      setFeatureStep(activeFeatureStep + (isScrollingDown ? 1 : -1), true);
+    };
+
+    featureScrollSection.dataset.step = "0";
+    updateFeatureStepFromScroll();
+    window.addEventListener("wheel", handleFeatureWheel, { passive: false });
+    window.addEventListener("scroll", requestFeatureUpdate, { passive: true });
+    window.addEventListener("resize", requestFeatureUpdate);
+  }
+
+  // 諮詢申請 CTA 進場動畫：區塊進入畫面時播放手機與卡片動畫，離開後移除 class，回來可重播。
+  if (ctaSection) {
+    let ctaAnimationFrame = null;
+
+    const ctaObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        window.cancelAnimationFrame(ctaAnimationFrame);
+
+        if (!entry.isIntersecting) {
+          ctaSection.classList.remove("is-cta-animated");
+          return;
+        }
+
+        ctaSection.classList.remove("is-cta-animated");
+        ctaAnimationFrame = window.requestAnimationFrame(() => {
+          ctaSection.classList.add("is-cta-animated");
+        });
+      });
+    }, {
+      threshold: 0.35,
+    });
+
+    ctaObserver.observe(ctaSection);
+  }
+
+  // 成功案例影片彈窗：點封面後才建立 YouTube iframe，並自動播放；關閉時清空 iframe 停止播放。
+  if (videoButtons.length && videoModal && videoFrame) {
+    let activeVideoButton = null;
+
+    const closeVideoModal = () => {
+      videoModal.hidden = true;
+      videoFrame.innerHTML = "";
+      document.body.classList.remove("is-video-open");
+
+      if (activeVideoButton) {
+        activeVideoButton.focus();
+        activeVideoButton = null;
+      }
+    };
+
+    const openVideoModal = (button) => {
+      const videoId = button.dataset.videoId;
+      const videoTitle = button.dataset.videoTitle || "成功案例影片";
+
+      if (!videoId) {
+        return;
+      }
+
+      activeVideoButton = button;
+      videoFrame.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1" title="${videoTitle}" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+      videoModal.hidden = false;
+      document.body.classList.add("is-video-open");
+
+      const closeButton = videoModal.querySelector(".video-modal-close");
+      closeButton?.focus();
+    };
+
+    videoButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        openVideoModal(button);
+      });
+    });
+
+    videoCloseButtons.forEach((button) => {
+      button.addEventListener("click", closeVideoModal);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !videoModal.hidden) {
+        closeVideoModal();
+      }
+    });
+  }
+
+  // 導覽列 active 狀態：首頁點錨點平滑捲動，並依目前看到的 section 更新導覽列底線。
+  if (navLinks.length) {
+    const samePageSectionLinks = Array.from(navLinks).filter((link) => {
+      const href = link.getAttribute("href") || "";
+      return href.startsWith("#") && document.querySelector(href);
+    });
+
+    if (samePageSectionLinks.length) {
+      const sectionMap = new Map(
+        samePageSectionLinks.map((link) => [document.querySelector(link.getAttribute("href")), link])
+      );
+
+      if (isIndexPage) {
+        samePageSectionLinks.forEach((link) => {
+          link.addEventListener("click", (event) => {
+            const href = link.getAttribute("href") || "";
+            const targetSection = document.querySelector(href);
+
+            if (!targetSection) {
+              return;
+            }
+
+            event.preventDefault();
+
+            const headerOffset = siteHeader?.offsetHeight || 0;
+            const targetTop = Math.max(targetSection.offsetTop - headerOffset, 0);
+
+            window.scrollTo({
+              top: targetTop,
+              behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+            });
+
+            window.history.pushState(null, "", href);
+          });
+        });
+      }
+
+      const setActiveLink = (activeLink) => {
+        samePageSectionLinks.forEach((link) => {
+          const isActive = link === activeLink;
+
+          link.classList.toggle("is-active", isActive);
+          link.toggleAttribute("aria-current", isActive);
+        });
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        const visibleEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visibleEntry) {
+          setActiveLink(sectionMap.get(visibleEntry.target));
+        }
+      }, {
+        rootMargin: "-35% 0px -50% 0px",
+        threshold: [0.2, 0.5, 0.8],
+      });
+
+      sectionMap.forEach((link, section) => {
+        observer.observe(section);
+      });
+    }
+  }
+
+  // FAQ 展開收合：點問題時切換 aria-expanded 與 hidden，讓鍵盤與螢幕閱讀器也能理解狀態。
+  faqQuestions.forEach((question) => {
+    question.addEventListener("click", () => {
+      const answerId = question.getAttribute("aria-controls");
+      const answer = answerId ? document.getElementById(answerId) : null;
+      const isOpen = question.getAttribute("aria-expanded") === "true";
+
+      if (!answer) {
+        return;
+      }
+
+      question.setAttribute("aria-expanded", String(!isOpen));
+      answer.hidden = isOpen;
+    });
+  });
+});
