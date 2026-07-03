@@ -861,21 +861,25 @@ html {
 
 .video-modal-close {
   position: absolute;
-  right: 0;
-  bottom: calc(100% + 14px);
-  width: 44px;
+  right: 4vw;
+  bottom: calc(100% + 8px);
+/*  width: 44px;
   min-width:44px;
   height: 44px;
-  min-height:44px;
-  color: #333333;
-  font-size: 32px;
+  min-height:44px;*/
+  color: #ffffff;
+  font-size: 50px;
   line-height: 1;
-  background: rgba(255, 255, 255, 0.8);
+  background:none;
   border: none;
   border-radius: 50%;
   cursor: pointer;
 }
 
+.video-modal-close:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+/*  outline-offset: 3px;*/
+}
 
 .video-modal-frame {
   overflow: hidden;
