@@ -1645,6 +1645,14 @@ html {
     z-index: 2;
   }
 
+  .solution-section.is-section-ready,
+  .solution-feature-section.is-section-ready,
+  .success-section.is-section-ready,
+  .cta-section.is-section-ready {
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
   .solution-feature-copy {
     text-align: left;
   }
