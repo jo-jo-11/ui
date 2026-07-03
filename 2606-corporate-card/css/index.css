@@ -1614,6 +1614,37 @@ html {
     padding: 34px 0;
   }
 
+  .success-section,
+  .cta-section {
+    position: relative;
+    z-index: 10;
+    isolation: isolate;
+  }
+
+  .success-section {
+    background: #ffffff;
+  }
+
+  .cta-section {
+    background: #f4f8f7;
+  }
+
+  .success-section::before,
+  .cta-section::before {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    content: "";
+    background: inherit;
+    pointer-events: none;
+  }
+
+  .success-inner,
+  .cta-inner {
+    position: relative;
+    z-index: 2;
+  }
+
   .solution-feature-copy {
     text-align: left;
   }
