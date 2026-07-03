@@ -861,24 +861,18 @@ html {
 
 .video-modal-close {
   position: absolute;
-  right: 4vw;
-  bottom: calc(100% + 8px);
-/*  width: 44px;
-  min-width:44px;
-  height: 44px;
-  min-height:44px;*/
+  right: 16px;
+  bottom: calc(100% + 16px);
   color: #ffffff;
   font-size: 50px;
   line-height: 1;
   background:none;
   border: none;
-  border-radius: 50%;
   cursor: pointer;
 }
 
 .video-modal-close:focus-visible {
-  outline: 1px solid rgba(255, 255, 255, 0.1);
-/*  outline-offset: 3px;*/
+  outline: 1px solid rgba(255, 255, 255, 0);
 }
 
 .video-modal-frame {
