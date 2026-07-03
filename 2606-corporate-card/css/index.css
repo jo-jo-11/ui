@@ -144,29 +144,38 @@ html {
   padding: clamp(32px, 5vw, 80px) clamp(24px, 9vw, 136px);
   overflow: hidden;
   border-top: 1px solid rgba(0, 122, 122, 0.12);
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+  background: #f5faf9;
   box-shadow: 0 -24px 60px rgba(0, 72, 72, 0.14);
+}
+
+.application-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
 }
 
 .application-section-1 {
   z-index: 2;
-  background-image: url("../assets/img/role-section-01.webp");
 }
 
 .application-section-2 {
   justify-content: flex-end;
   z-index: 3;
-  background-image: url("../assets/img/role-section-02.webp");
 }
 
 .application-section-3 {
   z-index: 4;
-  background-image: url("../assets/img/role-section-03.webp");
 }
 
 .role-card {
+  position: relative;
+  z-index: 1;
   width: min(56vw, 680px);
   padding: clamp(34px, 5vw, 68px) clamp(34px, 5vw, 72px);
   color: #4a4a4a;
@@ -829,10 +838,9 @@ html {
 .video-modal {
   position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 41;
   display: grid;
   place-items: center;
-  padding: 32px;
 }
 
 .video-modal[hidden] {
@@ -853,29 +861,30 @@ html {
 
 .video-modal-close {
   position: absolute;
-  right: 0;
-  bottom: calc(100% + 14px);
-  width: 44px;
+  right: 4vw;
+  bottom: calc(100% + 8px);
+/*  width: 44px;
+  min-width:44px;
   height: 44px;
+  min-height:44px;*/
   color: #ffffff;
-  font-size: 32px;
+  font-size: 50px;
   line-height: 1;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  background:none;
+  border: none;
   border-radius: 50%;
   cursor: pointer;
 }
 
 .video-modal-close:focus-visible {
-  outline: 3px solid rgba(255, 255, 255, 0.6);
-  outline-offset: 3px;
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+/*  outline-offset: 3px;*/
 }
 
 .video-modal-frame {
   overflow: hidden;
   aspect-ratio: 16 / 9;
   background: #000000;
-  border-radius: 8px;
 }
 
 .video-modal-frame iframe {
@@ -1603,6 +1612,45 @@ html {
     top: var(--header-height);
     width: min(100% - 36px, 520px);
     padding: 34px 0;
+  }
+
+  .success-section,
+  .cta-section {
+    position: relative;
+    z-index: 10;
+    isolation: isolate;
+  }
+
+  .success-section {
+    background: #ffffff;
+  }
+
+  .cta-section {
+    background: #f4f8f7;
+  }
+
+  .success-section::before,
+  .cta-section::before {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    content: "";
+    background: inherit;
+    pointer-events: none;
+  }
+
+  .success-inner,
+  .cta-inner {
+    position: relative;
+    z-index: 2;
+  }
+
+  .solution-section.is-section-ready,
+  .solution-feature-section.is-section-ready,
+  .success-section.is-section-ready,
+  .cta-section.is-section-ready {
+    backface-visibility: hidden;
+    will-change: transform;
   }
 
   .solution-feature-copy {
