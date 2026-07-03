@@ -405,7 +405,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       activeVideoButton = button;
-      videoFrame.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1" title="${videoTitle}" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+      videoFrame.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1&mute=1&playsinline=1" title="${videoTitle}" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
       videoModal.hidden = false;
       document.body.classList.add("is-video-open");
 
