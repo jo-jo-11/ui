@@ -26,6 +26,63 @@ document.addEventListener("DOMContentLoaded", () => {
     footerYear.textContent = currentYear;
   }
 
+  // 手機版區塊預熱：舊款手機在 sticky 區塊切換時較容易延遲重繪，提前標記下一個大型區塊並嘗試解碼圖片。
+  const warmupMobileSections = () => {
+    const mobileQuery = window.matchMedia("(max-width: 560px)");
+    const warmupSections = document.querySelectorAll("#solutions, #solutions-2, #solutions-3, #success-stories, #apply-info");
+
+    if (!warmupSections.length) {
+      return;
+    }
+
+    const markSectionReady = (section) => {
+      section.classList.add("is-section-ready");
+
+      section.querySelectorAll("img").forEach((image) => {
+        if (image.complete) {
+          return;
+        }
+
+        image.decode?.().catch(() => {});
+      });
+    };
+
+    if (!("IntersectionObserver" in window)) {
+      warmupSections.forEach(markSectionReady);
+      return;
+    }
+
+    const warmupObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!mobileQuery.matches || !entry.isIntersecting) {
+          return;
+        }
+
+        markSectionReady(entry.target);
+      });
+    }, {
+      rootMargin: "720px 0px 720px 0px",
+      threshold: 0,
+    });
+
+    const syncWarmupObserver = () => {
+      warmupSections.forEach((section) => {
+        if (mobileQuery.matches) {
+          warmupObserver.observe(section);
+          return;
+        }
+
+        warmupObserver.unobserve(section);
+        section.classList.remove("is-section-ready");
+      });
+    };
+
+    syncWarmupObserver();
+    mobileQuery.addEventListener?.("change", syncWarmupObserver);
+  };
+
+  warmupMobileSections();
+
   // 手機版導覽選單：點擊漢堡按鈕開關選單，點背景、按 Esc 或切回桌機尺寸時關閉。
   if (navToggle && siteNav) {
     const closeNav = () => {
