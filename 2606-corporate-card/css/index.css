@@ -841,7 +841,6 @@ html {
   z-index: 20;
   display: grid;
   place-items: center;
-  padding: 32px;
 }
 
 .video-modal[hidden] {
@@ -865,7 +864,9 @@ html {
   right: 0;
   bottom: calc(100% + 14px);
   width: 44px;
+  min-width:44px;
   height: 44px;
+  min-height:44px;
   color: #333333;
   font-size: 32px;
   line-height: 1;
@@ -875,16 +876,11 @@ html {
   cursor: pointer;
 }
 
-.video-modal-close:focus-visible {
-  outline: 3px solid rgba(255, 255, 255, 0.6);
-  outline-offset: 3px;
-}
 
 .video-modal-frame {
   overflow: hidden;
   aspect-ratio: 16 / 9;
   background: #000000;
-  border-radius: 8px;
 }
 
 .video-modal-frame iframe {
