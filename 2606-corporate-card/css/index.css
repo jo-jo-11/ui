@@ -1320,20 +1320,14 @@ html {
   }
 
   .application-section {
-    position: relative;
-    top: auto;
+    position: sticky;
+    top: var(--header-height);
     height: calc(100svh - var(--header-height));
     min-height: calc(100svh - var(--header-height));
-    isolation: isolate;
-  }
-
-  .solution-section {
-    z-index: 10;
   }
 
   .hero-section {
-    height: calc(100svh - var(--header-height));
-    min-height: calc(100svh - var(--header-height));
+    min-height: calc(100dvh - var(--header-height));
     padding: 48px 24px 88px;
     background-image: url("../assets/img/hero-card-ipad.webp");
   }
@@ -1387,8 +1381,7 @@ html {
 /* 手機版 */
 @media (max-width: 560px) {
   .hero-section {
-    height: calc(100svh - var(--header-height));
-    min-height: calc(100svh - var(--header-height));
+    min-height: calc(100dvh - var(--header-height));
     padding: 40px 20px 84px;
     background-image: url("../assets/img/hero-card-iphone.webp");
   }
@@ -1483,8 +1476,8 @@ html {
 
 
   .application-section {
-    position: relative;
-    top: auto;
+    position: sticky;
+    top: var(--header-height);
     align-items: center;
     justify-content: center;
     height: calc(100svh - var(--header-height));
@@ -1509,12 +1502,28 @@ html {
   }
 
   .solution-section {
+    position: relative;
+    z-index: 10;
+    isolation: isolate;
     min-height: auto;
     padding: 64px 0;
+    background: #f5faf9;
+  }
+
+  .solution-section::before,
+  .solution-feature-section::before {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    content: "";
+    background: inherit;
+    pointer-events: none;
   }
 
   .solution-inner,
   .solution-card-inner {
+    position: relative;
+    z-index: 2;
     width: min(100% - 40px, 1080px);
   }
 
@@ -1534,6 +1543,16 @@ html {
 
   .solution-card-heading {
     margin-bottom: 36px;
+  }
+
+  .solution-card-section {
+    background:
+      radial-gradient(circle at 18% 74%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0) 34%),
+      linear-gradient(180deg, #999999 0%, #c7c7c7 52%, #eeeeee 100%);
+  }
+
+  .solution-table-light {
+    z-index: 1;
   }
 
 
@@ -1571,10 +1590,16 @@ html {
   }
 
   .solution-feature-section {
+    position: relative;
+    z-index: 10;
+    isolation: isolate;
     height: 440vh;
+    background: #f5faf9;
   }
 
   .solution-feature-sticky {
+    position: sticky;
+    z-index: 2;
     top: var(--header-height);
     width: min(100% - 36px, 520px);
     padding: 34px 0;
