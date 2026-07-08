@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const navBackdrop = document.querySelector(".nav-backdrop");
   const navLinks = document.querySelectorAll(".site-nav a:not(.nav-cta)");
   const snapSections = Array.from(document.querySelectorAll(".page-section"));
-  const applicationSections = Array.from(document.querySelectorAll(".application-section"));
   const faqQuestions = document.querySelectorAll(".faq-question");
   const featureScrollSection = document.querySelector("[data-feature-scroll]");
   const ctaSection = document.querySelector(".cta-section");
@@ -27,19 +26,80 @@ document.addEventListener("DOMContentLoaded", () => {
     footerYear.textContent = currentYear;
   }
 
-  // 手機版導覽選單：點擊漢堡按鈕開關選單，點背景、按 Esc 或切回桌機尺寸時關閉。
-  if (navToggle && siteNav) {
-    const closeNav = () => {
-      navToggle.setAttribute("aria-expanded", "false");
-      navToggle.setAttribute("aria-label", "開啟導覽選單");
-      siteNav.classList.remove("is-open");
-      document.body.classList.remove("is-nav-open");
+  // 手機版區塊預熱：舊款手機在 sticky 區塊切換時較容易延遲重繪，提前標記下一個大型區塊並嘗試解碼圖片。
+  const warmupMobileSections = () => {
+    const mobileQuery = window.matchMedia("(max-width: 560px)");
+    const warmupSections = document.querySelectorAll("#application-scenes, #solutions, #solutions-3, #success-stories, #apply-info");
 
-      if (navBackdrop) {
-        navBackdrop.hidden = true;
-      }
+    if (!warmupSections.length) {
+      return;
+    }
+
+    const markSectionReady = (section) => {
+      section.classList.add("is-section-ready");
+
+      section.querySelectorAll("img").forEach((image) => {
+        if (image.complete) {
+          return;
+        }
+
+        image.decode?.().catch(() => {});
+      });
     };
 
+    if (!("IntersectionObserver" in window)) {
+      warmupSections.forEach(markSectionReady);
+      return;
+    }
+
+    const warmupObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!mobileQuery.matches || !entry.isIntersecting) {
+          return;
+        }
+
+        markSectionReady(entry.target);
+      });
+    }, {
+      rootMargin: "720px 0px 720px 0px",
+      threshold: 0,
+    });
+
+    const syncWarmupObserver = () => {
+      warmupSections.forEach((section) => {
+        if (mobileQuery.matches) {
+          warmupObserver.observe(section);
+          return;
+        }
+
+        warmupObserver.unobserve(section);
+        section.classList.remove("is-section-ready");
+      });
+    };
+
+    syncWarmupObserver();
+    mobileQuery.addEventListener?.("change", syncWarmupObserver);
+  };
+
+  warmupMobileSections();
+
+  const closeSiteNav = () => {
+    if (!navToggle || !siteNav) {
+      return;
+    }
+
+    navToggle.setAttribute("aria-expanded", "false");
+    navToggle.setAttribute("aria-label", "開啟導覽選單");
+    siteNav.classList.remove("is-open");
+    document.body.classList.remove("is-nav-open");
+
+    if (navBackdrop) {
+      navBackdrop.hidden = true;
+    }
+  };
+
+  // 手機版導覽選單：點擊漢堡按鈕開關選單，點背景、按 Esc 或切回桌機尺寸時關閉。
+  if (navToggle && siteNav) {
     navToggle.addEventListener("click", () => {
       const isOpen = navToggle.getAttribute("aria-expanded") === "true";
 
@@ -55,23 +115,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     siteNav.addEventListener("click", (event) => {
       if (event.target.closest("a")) {
-        closeNav();
+        closeSiteNav();
       }
     });
 
     if (navBackdrop) {
-      navBackdrop.addEventListener("click", closeNav);
+      navBackdrop.addEventListener("click", closeSiteNav);
     }
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
-        closeNav();
+        closeSiteNav();
       }
     });
 
     window.addEventListener("resize", () => {
       if (window.matchMedia("(min-width: 769px)").matches) {
-        closeNav();
+        closeSiteNav();
       }
     });
   }
@@ -98,248 +158,74 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
   }
 
-  // 內容頁分屏滾動：桌機用滑鼠滾輪或鍵盤上下鍵，一次移動到下一個主要 section。
-  if (snapSections.length > 1 && !isIndexPage) {
-    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const desktopQuery = window.matchMedia("(min-width: 901px)");
-    let activeSnapIndex = 0;
-    let isSnapScrolling = false;
-    let snapReleaseTimer = null;
+// 首頁企業效益：改成跟 solutions-3 一樣，用 scroll 進度控制 data-step
+if (isIndexPage) {
+  const applicationCarousel = document.querySelector("[data-application-carousel]");
+  const applicationSlides = [
+    document.querySelector("#application-scenes-1"),
+    document.querySelector("#application-scenes-2"),
+    document.querySelector("#application-scenes-3"),
+  ].filter(Boolean);
+
+  if (applicationCarousel && applicationSlides.length > 1) {
+    const totalApplicationSteps = applicationSlides.length;
+    let activeApplicationStep = -1;
+    let applicationFrameId = null;
 
     const getHeaderOffset = () => siteHeader?.offsetHeight || 0;
 
-    const getClosestSectionIndex = () => {
-      const headerOffset = getHeaderOffset();
-      const currentTop = window.scrollY + headerOffset;
-
-      return snapSections.reduce((closestIndex, section, index) => {
-        const currentDistance = Math.abs(snapSections[closestIndex].offsetTop - currentTop);
-        const nextDistance = Math.abs(section.offsetTop - currentTop);
-
-        return nextDistance < currentDistance ? index : closestIndex;
-      }, 0);
+    const getApplicationScrollableDistance = () => {
+      return applicationCarousel.offsetHeight - window.innerHeight + getHeaderOffset();
     };
 
-    const releaseSnapLock = () => {
-      window.clearTimeout(snapReleaseTimer);
-      snapReleaseTimer = window.setTimeout(() => {
-        isSnapScrolling = false;
-        activeSnapIndex = getClosestSectionIndex();
-      }, 820);
-    };
+    const setApplicationStep = (step) => {
+      const nextStep = Math.max(0, Math.min(step, totalApplicationSteps - 1));
 
-    const scrollToSnapSection = (index) => {
-      const nextIndex = Math.max(0, Math.min(index, snapSections.length - 1));
-      const targetSection = snapSections[nextIndex];
-
-      if (!targetSection) {
+      if (nextStep === activeApplicationStep) {
         return;
       }
 
-      activeSnapIndex = nextIndex;
-      isSnapScrolling = true;
+      activeApplicationStep = nextStep;
+      applicationCarousel.dataset.step = String(nextStep);
 
-      const targetTop = Math.max(targetSection.offsetTop - getHeaderOffset(), 0);
-
-      window.scrollTo({
-        top: targetTop,
-        behavior: reducedMotionQuery.matches ? "auto" : "smooth",
+      applicationSlides.forEach((slide, index) => {
+        slide.setAttribute("aria-hidden", String(index !== nextStep));
       });
-
-      releaseSnapLock();
     };
 
-    window.addEventListener("wheel", (event) => {
-      const isNavOpen = navToggle?.getAttribute("aria-expanded") === "true";
-
-      if (!desktopQuery.matches || reducedMotionQuery.matches || isNavOpen) {
-        return;
-      }
-
-      if (Math.abs(event.deltaY) < 16 || Math.abs(event.deltaY) < Math.abs(event.deltaX)) {
-        return;
-      }
-
-      event.preventDefault();
-
-      if (isSnapScrolling) {
-        return;
-      }
-
-      activeSnapIndex = getClosestSectionIndex();
-      scrollToSnapSection(activeSnapIndex + (event.deltaY > 0 ? 1 : -1));
-    }, { passive: false });
-
-    document.addEventListener("keydown", (event) => {
-      const isNavOpen = navToggle?.getAttribute("aria-expanded") === "true";
-      const keyMap = {
-        ArrowDown: 1,
-        PageDown: 1,
-        ArrowUp: -1,
-        PageUp: -1,
-      };
-
-      if (!desktopQuery.matches || reducedMotionQuery.matches || isNavOpen) {
-        return;
-      }
-
-      if (event.key === "Home") {
-        event.preventDefault();
-        scrollToSnapSection(0);
-        return;
-      }
-
-      if (event.key === "End") {
-        event.preventDefault();
-        scrollToSnapSection(snapSections.length - 1);
-        return;
-      }
-
-      if (!Object.prototype.hasOwnProperty.call(keyMap, event.key)) {
-        return;
-      }
-
-      event.preventDefault();
-      activeSnapIndex = getClosestSectionIndex();
-      scrollToSnapSection(activeSnapIndex + keyMap[event.key]);
-    });
-
-    window.addEventListener("resize", () => {
-      activeSnapIndex = getClosestSectionIndex();
-    });
-  }
-
-  // 手機版 fullPage 整屏切換：從首屏到解決方案表格，一次滑動只切換一個完整畫面。
-  if (applicationSections.length) {
-    const mobileFullPageQuery = window.matchMedia("(max-width: 900px)");
-    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const mobileFullPageSections = [
-      document.querySelector(".hero-section"),
-      ...applicationSections,
-      document.querySelector("#solutions"),
-      document.querySelector("#solutions-2"),
-    ].filter(Boolean);
-    let touchStartY = null;
-    let isMobileFullPageScrolling = false;
-    let mobileFullPageTimer = null;
-
-    const getHeaderOffset = () => siteHeader?.offsetHeight || 0;
-
-    const getClosestMobileFullPageIndex = () => {
-      const currentTop = window.scrollY + getHeaderOffset();
-
-      return mobileFullPageSections.reduce((closestIndex, section, index) => {
-        const currentDistance = Math.abs(mobileFullPageSections[closestIndex].offsetTop - currentTop);
-        const nextDistance = Math.abs(section.offsetTop - currentTop);
-
-        return nextDistance < currentDistance ? index : closestIndex;
-      }, 0);
-    };
-
-    const isInMobileFullPageRange = () => {
-      const firstSection = mobileFullPageSections[0];
-      const lastSection = mobileFullPageSections[mobileFullPageSections.length - 1];
-
-      if (!firstSection || !lastSection) {
-        return false;
-      }
+    const updateApplicationStepFromScroll = () => {
+      applicationFrameId = null;
 
       const headerOffset = getHeaderOffset();
-      const currentTop = window.scrollY + headerOffset;
-      const start = firstSection.offsetTop - 4;
-      const end = lastSection.offsetTop + lastSection.offsetHeight + window.innerHeight * 0.18;
+      const scrollableDistance = getApplicationScrollableDistance();
+      const scrolledDistance = window.scrollY + headerOffset - applicationCarousel.offsetTop;
 
-      return currentTop >= start && currentTop <= end;
+      const rawProgress = scrollableDistance > 0
+        ? scrolledDistance / scrollableDistance
+        : 0;
+
+      const progress = Math.min(Math.max(rawProgress, 0), 1);
+      const nextStep = Math.round(progress * (totalApplicationSteps - 1));
+
+      setApplicationStep(nextStep);
     };
 
-    const scrollToMobileFullPage = (index) => {
-      const nextIndex = Math.max(0, Math.min(index, mobileFullPageSections.length - 1));
-      const targetSection = mobileFullPageSections[nextIndex];
-
-      if (!targetSection) {
+    const requestApplicationUpdate = () => {
+      if (applicationFrameId !== null) {
         return;
       }
 
-      isMobileFullPageScrolling = true;
-      window.clearTimeout(mobileFullPageTimer);
-      window.scrollTo({
-        top: Math.max(targetSection.offsetTop - getHeaderOffset(), 0),
-        behavior: reducedMotionQuery.matches ? "auto" : "smooth",
-      });
-
-      mobileFullPageTimer = window.setTimeout(() => {
-        isMobileFullPageScrolling = false;
-      }, 720);
+      applicationFrameId = window.requestAnimationFrame(updateApplicationStepFromScroll);
     };
 
-    const handleMobileFullPageMove = (direction) => {
-      const isNavOpen = navToggle?.getAttribute("aria-expanded") === "true";
+    applicationCarousel.dataset.step = "0";
+    setApplicationStep(0);
 
-      if (!mobileFullPageQuery.matches || reducedMotionQuery.matches || isMobileFullPageScrolling || isNavOpen || !isInMobileFullPageRange()) {
-        return false;
-      }
-
-      const activeIndex = getClosestMobileFullPageIndex();
-      const nextIndex = activeIndex + direction;
-
-      if (nextIndex < 0 || nextIndex >= mobileFullPageSections.length) {
-        return false;
-      }
-
-      scrollToMobileFullPage(nextIndex);
-      return true;
-    };
-
-    window.addEventListener("wheel", (event) => {
-      if (Math.abs(event.deltaY) < 18 || Math.abs(event.deltaY) < Math.abs(event.deltaX)) {
-        return;
-      }
-
-      if (handleMobileFullPageMove(event.deltaY > 0 ? 1 : -1)) {
-        event.preventDefault();
-      }
-    }, { passive: false });
-
-    window.addEventListener("touchstart", (event) => {
-      touchStartY = event.touches[0]?.clientY ?? null;
-    }, { passive: true });
-
-    window.addEventListener("touchmove", (event) => {
-      if (touchStartY === null) {
-        return;
-      }
-
-      const touchCurrentY = event.touches[0]?.clientY ?? touchStartY;
-      const deltaY = touchStartY - touchCurrentY;
-
-      if (Math.abs(deltaY) < 44) {
-        return;
-      }
-
-      if (handleMobileFullPageMove(deltaY > 0 ? 1 : -1)) {
-        event.preventDefault();
-        touchStartY = touchCurrentY;
-      }
-    }, { passive: false });
-
-    window.addEventListener("touchend", (event) => {
-      if (touchStartY === null) {
-        return;
-      }
-
-      const touchEndY = event.changedTouches[0]?.clientY ?? touchStartY;
-      const deltaY = touchStartY - touchEndY;
-      touchStartY = null;
-
-      if (Math.abs(deltaY) < 44) {
-        return;
-      }
-
-      if (handleMobileFullPageMove(deltaY > 0 ? 1 : -1)) {
-        event.preventDefault();
-      }
-    }, { passive: false });
+    window.addEventListener("scroll", requestApplicationUpdate, { passive: true });
+    window.addEventListener("resize", requestApplicationUpdate);
   }
+}
+
 
   // 解決方案 3 圖片拆解動畫：依照滾動進度切換 data-step，讓圖片一張張出現或疊加。
   if (featureScrollSection) {
@@ -481,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       activeVideoButton = button;
-      videoFrame.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1" title="${videoTitle}" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+      videoFrame.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1&mute=1&playsinline=1" title="${videoTitle}" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
       videoModal.hidden = false;
       document.body.classList.add("is-video-open");
 
@@ -517,6 +403,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const sectionMap = new Map(
         samePageSectionLinks.map((link) => [document.querySelector(link.getAttribute("href")), link])
       );
+      let isNavAnchorScrolling = false;
+      let navAnchorTimer = null;
+
+      const setActiveLink = (activeLink) => {
+        samePageSectionLinks.forEach((link) => {
+          const isActive = link === activeLink;
+
+          link.classList.toggle("is-active", isActive);
+
+          if (isActive) {
+            link.setAttribute("aria-current", "page");
+            return;
+          }
+
+          link.removeAttribute("aria-current");
+        });
+      };
 
       if (isIndexPage) {
         samePageSectionLinks.forEach((link) => {
@@ -530,44 +433,88 @@ document.addEventListener("DOMContentLoaded", () => {
 
             event.preventDefault();
 
-            const headerOffset = siteHeader?.offsetHeight || 0;
-            const targetTop = Math.max(targetSection.offsetTop - headerOffset, 0);
-
-            window.scrollTo({
-              top: targetTop,
-              behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-            });
+            setActiveLink(link);
+            closeSiteNav();
+            window.clearTimeout(navAnchorTimer);
+            isNavAnchorScrolling = true;
 
             window.history.pushState(null, "", href);
+
+            window.requestAnimationFrame(() => {
+              const headerOffset = siteHeader?.offsetHeight || 0;
+              const targetRect = targetSection.getBoundingClientRect();
+              const isValueAnchor = href === "#value";
+              const targetTop = Math.max(targetRect.top + window.scrollY - headerOffset, 0);
+
+              window.scrollTo({
+                top: targetTop,
+                behavior: isValueAnchor || window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+              });
+
+              navAnchorTimer = window.setTimeout(() => {
+                isNavAnchorScrolling = false;
+              }, isValueAnchor ? 300 : 900);
+            });
           });
         });
       }
 
-      const setActiveLink = (activeLink) => {
-        samePageSectionLinks.forEach((link) => {
-          const isActive = link === activeLink;
+      if (isIndexPage && window.location.hash) {
+        const initialActiveLink = samePageSectionLinks.find((link) => link.getAttribute("href") === window.location.hash);
 
-          link.classList.toggle("is-active", isActive);
-          link.toggleAttribute("aria-current", isActive);
-        });
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        const visibleEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-        if (visibleEntry) {
-          setActiveLink(sectionMap.get(visibleEntry.target));
+        if (initialActiveLink) {
+          setActiveLink(initialActiveLink);
+          window.clearTimeout(navAnchorTimer);
+          isNavAnchorScrolling = true;
+          navAnchorTimer = window.setTimeout(() => {
+            isNavAnchorScrolling = false;
+          }, 900);
         }
-      }, {
-        rootMargin: "-35% 0px -50% 0px",
-        threshold: [0.2, 0.5, 0.8],
-      });
+      }
 
-      sectionMap.forEach((link, section) => {
-        observer.observe(section);
-      });
+      if (isIndexPage) {
+        let navSpyFrameId = null;
+
+        const getSectionPoints = () => (
+          Array.from(sectionMap.entries())
+            .map(([section, link]) => ({
+              link,
+              top: section.getBoundingClientRect().top + window.scrollY,
+            }))
+            .sort((a, b) => a.top - b.top)
+        );
+
+        const updateActiveLinkFromScroll = () => {
+          navSpyFrameId = null;
+
+          if (isNavAnchorScrolling) {
+            return;
+          }
+
+          const headerOffset = siteHeader?.offsetHeight || 0;
+          const triggerTop = window.scrollY + headerOffset + (window.innerHeight * 0.35);
+          const sectionPoints = getSectionPoints();
+          const activePoint = sectionPoints.reduce((currentPoint, nextPoint) => (
+            nextPoint.top <= triggerTop ? nextPoint : currentPoint
+          ), sectionPoints[0]);
+
+          if (activePoint?.link) {
+            setActiveLink(activePoint.link);
+          }
+        };
+
+        const requestNavSpyUpdate = () => {
+          if (navSpyFrameId !== null) {
+            return;
+          }
+
+          navSpyFrameId = window.requestAnimationFrame(updateActiveLinkFromScroll);
+        };
+
+        requestNavSpyUpdate();
+        window.addEventListener("scroll", requestNavSpyUpdate, { passive: true });
+        window.addEventListener("resize", requestNavSpyUpdate);
+      }
     }
   }
 
