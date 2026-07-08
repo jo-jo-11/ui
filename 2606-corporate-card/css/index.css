@@ -1605,14 +1605,14 @@ html {
   }
 */
 
-  .application-carousel {
-    height: calc((100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px) - 24px) * 3);
-    min-height: calc((100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px) - 24px) * 3);
+ .application-carousel {
+    height: calc((100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px)) * 3);
+    min-height: calc((100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px)) * 3);
   }
 
   .application-carousel-stage {
-    height: calc(100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px) - 24px);
-    min-height: calc(100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px) - 24px);
+    height: calc(100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px));
+    min-height: calc(100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px));
   }
 
 
