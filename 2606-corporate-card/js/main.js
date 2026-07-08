@@ -171,6 +171,7 @@ if (isIndexPage) {
     const totalApplicationSteps = applicationSlides.length;
     let activeApplicationStep = -1;
     let applicationFrameId = null;
+    let isApplicationStepScrolling = false;
 
     const getHeaderOffset = () => siteHeader?.offsetHeight || 0;
 
@@ -178,7 +179,30 @@ if (isIndexPage) {
       return applicationCarousel.offsetHeight - window.innerHeight + getHeaderOffset();
     };
 
-    const setApplicationStep = (step) => {
+    const syncApplicationScrollToStep = (step) => {
+      const scrollableDistance = getApplicationScrollableDistance();
+
+      if (scrollableDistance <= 0) {
+        return;
+      }
+
+      const headerOffset = getHeaderOffset();
+      const targetTop = applicationCarousel.offsetTop
+        - headerOffset
+        + (scrollableDistance * step) / (totalApplicationSteps - 1);
+
+      isApplicationStepScrolling = true;
+      window.scrollTo({
+        top: targetTop,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      });
+
+      window.setTimeout(() => {
+        isApplicationStepScrolling = false;
+      }, 420);
+    };
+
+    const setApplicationStep = (step, shouldSyncScroll = false) => {
       const nextStep = Math.max(0, Math.min(step, totalApplicationSteps - 1));
 
       if (nextStep === activeApplicationStep) {
@@ -191,10 +215,18 @@ if (isIndexPage) {
       applicationSlides.forEach((slide, index) => {
         slide.setAttribute("aria-hidden", String(index !== nextStep));
       });
+
+      if (shouldSyncScroll) {
+        syncApplicationScrollToStep(nextStep);
+      }
     };
 
     const updateApplicationStepFromScroll = () => {
       applicationFrameId = null;
+
+      if (isApplicationStepScrolling) {
+        return;
+      }
 
       const headerOffset = getHeaderOffset();
       const scrollableDistance = getApplicationScrollableDistance();
@@ -207,7 +239,7 @@ if (isIndexPage) {
       const progress = Math.min(Math.max(rawProgress, 0), 1);
       const nextStep = Math.round(progress * (totalApplicationSteps - 1));
 
-      setApplicationStep(nextStep);
+      setApplicationStep(nextStep, true);
     };
 
     const requestApplicationUpdate = () => {
