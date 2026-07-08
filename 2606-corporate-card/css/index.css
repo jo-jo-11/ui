@@ -1617,14 +1617,14 @@ html {
 
 
   .application-carousel {
-    height: calc(100dvh * 3);
-    min-height: calc(100dvh * 3);
-    box-shadow: none;
+    height: calc((100dvh - var(--header-height)) * 3);
+    min-height: calc((100dvh - var(--header-height)) * 3);
   }
 
   .application-carousel-stage {
-    height: 100dvh;
-    min-height: 100dvh;
+    top: var(--header-height);
+    height: calc(100dvh - var(--header-height));
+    min-height: calc(100dvh - var(--header-height));
   }
 
   .application-slide {
