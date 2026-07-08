@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
   const isIndexPage = currentPage === "index.html";
   let lastScrollY = window.scrollY;
+  let isGlobalAnchorScrolling = false;
 
   // 頁尾年份：自動填入今年年份，避免每年手動改 footer 版權年份。
   if (footerYear) {
@@ -158,7 +159,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
   }
 
-// 首頁企業效益：改成跟 solutions-3 一樣，用 scroll 進度控制 data-step
+  // 首頁企業效益：改成跟 solutions-3 一樣，用 scroll 進度控制 data-step，不在這裡 scrollTo
+let resetApplicationCarouselToFirstStep = () => {};
+
 if (isIndexPage) {
   const applicationCarousel = document.querySelector("[data-application-carousel]");
   const applicationSlides = [
@@ -171,38 +174,10 @@ if (isIndexPage) {
     const totalApplicationSteps = applicationSlides.length;
     let activeApplicationStep = -1;
     let applicationFrameId = null;
-    let isApplicationStepScrolling = false;
 
     const getHeaderOffset = () => siteHeader?.offsetHeight || 0;
 
-    const getApplicationScrollableDistance = () => {
-      return applicationCarousel.offsetHeight - window.innerHeight + getHeaderOffset();
-    };
-
-    const syncApplicationScrollToStep = (step) => {
-      const scrollableDistance = getApplicationScrollableDistance();
-
-      if (scrollableDistance <= 0) {
-        return;
-      }
-
-      const headerOffset = getHeaderOffset();
-      const targetTop = applicationCarousel.offsetTop
-        - headerOffset
-        + (scrollableDistance * step) / (totalApplicationSteps - 1);
-
-      isApplicationStepScrolling = true;
-      window.scrollTo({
-        top: targetTop,
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-      });
-
-      window.setTimeout(() => {
-        isApplicationStepScrolling = false;
-      }, 420);
-    };
-
-    const setApplicationStep = (step, shouldSyncScroll = false) => {
+    const setApplicationStep = (step) => {
       const nextStep = Math.max(0, Math.min(step, totalApplicationSteps - 1));
 
       if (nextStep === activeApplicationStep) {
@@ -215,22 +190,21 @@ if (isIndexPage) {
       applicationSlides.forEach((slide, index) => {
         slide.setAttribute("aria-hidden", String(index !== nextStep));
       });
+    };
 
-      if (shouldSyncScroll) {
-        syncApplicationScrollToStep(nextStep);
-      }
+    resetApplicationCarouselToFirstStep = () => {
+      setApplicationStep(0);
     };
 
     const updateApplicationStepFromScroll = () => {
       applicationFrameId = null;
 
-      if (isApplicationStepScrolling) {
-        return;
-      }
-
       const headerOffset = getHeaderOffset();
-      const scrollableDistance = getApplicationScrollableDistance();
-      const scrolledDistance = window.scrollY + headerOffset - applicationCarousel.offsetTop;
+      const scrollableDistance =
+        applicationCarousel.offsetHeight - window.innerHeight + headerOffset;
+
+      const scrolledDistance =
+        window.scrollY + headerOffset - applicationCarousel.offsetTop;
 
       const rawProgress = scrollableDistance > 0
         ? scrolledDistance / scrollableDistance
@@ -239,7 +213,7 @@ if (isIndexPage) {
       const progress = Math.min(Math.max(rawProgress, 0), 1);
       const nextStep = Math.round(progress * (totalApplicationSteps - 1));
 
-      setApplicationStep(nextStep, true);
+      setApplicationStep(nextStep);
     };
 
     const requestApplicationUpdate = () => {
@@ -438,6 +412,25 @@ if (isIndexPage) {
       let isNavAnchorScrolling = false;
       let navAnchorTimer = null;
 
+      const getAnchorTargetTop = (targetSection) => {
+        const headerOffset = siteHeader?.offsetHeight || 0;
+        const targetRect = targetSection.getBoundingClientRect();
+
+        return Math.max(targetRect.top + window.scrollY - headerOffset, 0);
+      };
+
+      const scrollToAnchorSection = (targetSection, href, behavior = "smooth") => {
+        const isValueAnchor = href === "#value";
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        window.scrollTo({
+          top: getAnchorTargetTop(targetSection),
+          behavior: isValueAnchor || prefersReducedMotion ? "auto" : behavior,
+        });
+
+        return isValueAnchor ? 300 : 900;
+      };
+
       const setActiveLink = (activeLink) => {
         samePageSectionLinks.forEach((link) => {
           const isActive = link === activeLink;
@@ -467,25 +460,25 @@ if (isIndexPage) {
 
             setActiveLink(link);
             closeSiteNav();
+
+            if (href === "#value") {
+              resetApplicationCarouselToFirstStep();
+            }
+
+
             window.clearTimeout(navAnchorTimer);
             isNavAnchorScrolling = true;
+            isGlobalAnchorScrolling = true;
 
             window.history.pushState(null, "", href);
 
             window.requestAnimationFrame(() => {
-              const headerOffset = siteHeader?.offsetHeight || 0;
-              const targetRect = targetSection.getBoundingClientRect();
-              const isValueAnchor = href === "#value";
-              const targetTop = Math.max(targetRect.top + window.scrollY - headerOffset, 0);
-
-              window.scrollTo({
-                top: targetTop,
-                behavior: isValueAnchor || window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-              });
+              const anchorUnlockDelay = scrollToAnchorSection(targetSection, href);
 
               navAnchorTimer = window.setTimeout(() => {
                 isNavAnchorScrolling = false;
-              }, isValueAnchor ? 300 : 900);
+                isGlobalAnchorScrolling = false;
+              }, anchorUnlockDelay);
             });
           });
         });
@@ -495,12 +488,28 @@ if (isIndexPage) {
         const initialActiveLink = samePageSectionLinks.find((link) => link.getAttribute("href") === window.location.hash);
 
         if (initialActiveLink) {
+          const targetSection = document.querySelector(window.location.hash);
+
           setActiveLink(initialActiveLink);
+
+           if (window.location.hash === "#value") {
+            resetApplicationCarouselToFirstStep();
+          }
+
           window.clearTimeout(navAnchorTimer);
           isNavAnchorScrolling = true;
-          navAnchorTimer = window.setTimeout(() => {
-            isNavAnchorScrolling = false;
-          }, 900);
+          isGlobalAnchorScrolling = true;
+
+          window.requestAnimationFrame(() => {
+            const anchorUnlockDelay = targetSection
+              ? scrollToAnchorSection(targetSection, window.location.hash, "auto")
+              : 900;
+
+            navAnchorTimer = window.setTimeout(() => {
+              isNavAnchorScrolling = false;
+              isGlobalAnchorScrolling = false;
+            }, anchorUnlockDelay);
+          });
         }
       }
 
