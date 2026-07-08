@@ -1492,6 +1492,8 @@ html {
   }
 
 
+
+
 }
 
 /* 手機版 */
@@ -1591,7 +1593,7 @@ html {
 
 
 
-  .application-carousel {
+/*  .application-carousel {
     height: calc((100dvh - var(--header-height)) * 3);
     min-height: calc((100dvh - var(--header-height)) * 3);
     box-shadow: none;
@@ -1601,6 +1603,18 @@ html {
     height: calc(100dvh - var(--header-height));
     min-height: calc(100dvh - var(--header-height));
   }
+*/
+
+  .application-carousel {
+    height: calc((100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px) - 24px) * 3);
+    min-height: calc((100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px) - 24px) * 3);
+  }
+
+  .application-carousel-stage {
+    height: calc(100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px) - 24px);
+    min-height: calc(100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px) - 24px);
+  }
+
 
   .application-slide {
     align-items: center;
