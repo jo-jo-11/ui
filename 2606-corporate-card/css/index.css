@@ -68,11 +68,12 @@ html {
   background:linear-gradient(180deg, #007A7A 40%, #333333 100%);;
 }
 
-.hero-subtitle p {
+.hero-subtitle h3 {
   margin: 0;
+  font-weight: 400;
 }
 
-.hero-subtitle p:last-child {
+.hero-subtitle h3:last-child {
   opacity: 0.9;
 }
 
@@ -133,19 +134,52 @@ html {
 }
 
 
-/* 應用場景疊蓋區塊 */
-.application-section {
-  position: sticky;
-  top: var(--header-height);
-  display: flex;
-  align-items: center;
-  height: calc(100dvh - var(--header-height));
-  min-height: calc(100dvh - var(--header-height));
-  padding: clamp(32px, 5vw, 80px) clamp(24px, 9vw, 136px);
-  overflow: hidden;
+/* 企業效益輪播 */
+.application-carousel {
+  position: relative;
+  height: calc((100dvh - var(--header-height)) * 3);
+  min-height: calc((100dvh - var(--header-height)) * 3);
   border-top: 1px solid rgba(0, 122, 122, 0.12);
   background: #f5faf9;
   box-shadow: 0 -24px 60px rgba(0, 72, 72, 0.14);
+  isolation: isolate;
+}
+
+.application-carousel-stage {
+  position: sticky;
+  top: var(--header-height);
+  height: calc(100dvh - var(--header-height));
+  overflow: hidden;
+}
+
+.application-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: clamp(32px, 5vw, 80px) clamp(24px, 9vw, 136px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(28px);
+  transition:
+    opacity 520ms ease,
+    transform 520ms ease,
+    visibility 0s linear 520ms;
+}
+
+#value[data-step="0"] #application-scenes-1,
+#value[data-step="1"] #application-scenes-2,
+#value[data-step="2"] #application-scenes-3 {
+  z-index: 2;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition:
+    opacity 520ms ease,
+    transform 520ms ease,
+    visibility 0s linear 0s;
 }
 
 .application-bg {
@@ -160,17 +194,8 @@ html {
   user-select: none;
 }
 
-.application-section-1 {
-  z-index: 2;
-}
-
-.application-section-2 {
+.application-slide-2 {
   justify-content: flex-end;
-  z-index: 3;
-}
-
-.application-section-3 {
-  z-index: 4;
 }
 
 .role-card {
@@ -221,20 +246,21 @@ html {
   border-radius: 50%;
 }
 
-.role-list strong,
-.role-list span {
+.role-list-title,
+.role-list-text {
   display: block;
 }
 
-.role-list strong {
+.role-list-title {
+  margin: 0;
   color: #00a19b;
   font-size: clamp(20px, 1.67vw, 24px);
   font-weight: 600;
   line-height: 1.35;
 }
 
-.role-list span {
-  margin-top: 3px;
+.role-list-text {
+  margin: 3px 0 0;
   color: #333333;
   font-size: clamp(16px, 1.39vw, 20px);
   font-weight: 400;
@@ -330,7 +356,7 @@ html {
   text-shadow: -4px 4px 4px rgba(0, 0, 0, 0.3);
 }
 
-.solution-card-heading p {
+.solution-card-heading h3 {
   margin: 18px 0 0;
   font-size: clamp(20px, 1.94vw, 28px);
   font-weight: 500;
@@ -369,7 +395,7 @@ html {
   z-index: -1;
   left: -6%;
   bottom: 2%;
-  width: min(120%, 520px);
+  width: min(120%, 450px);
   max-width: none;
   filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.18));
 }
@@ -511,6 +537,10 @@ html {
 }
 
 .solution-feature-copy .btn-group button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   min-width: 206px;
   min-height: 54px;
   padding: 14px 32px;
@@ -528,6 +558,59 @@ html {
     background-color 180ms ease,
     border-color 180ms ease,
     transform 180ms ease;
+}
+
+.button-play-icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  color: currentColor;
+}
+
+@property --button-play-ring-progress {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.button-play-icon::before {
+  --button-play-ring-progress: 0deg;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(currentColor 0deg var(--button-play-ring-progress), transparent var(--button-play-ring-progress) 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+  animation: button-play-ring 1800ms ease-out infinite;
+}
+
+.button-play-icon span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid currentColor;
+  transform: translate(-35%, -50%);
+}
+
+@keyframes button-play-ring {
+  0% {
+    --button-play-ring-progress: 0deg;
+  }
+
+  72%,
+  99% {
+    --button-play-ring-progress: 360deg;
+  }
+
+  100% {
+    --button-play-ring-progress: 0deg;
+  }
 }
 
 .solution-feature-copy .btn-group button:nth-child(2) {
@@ -1027,10 +1110,19 @@ html {
   list-style-position: inside;
 }
 
-.cta-contact-list small {
+.cta-contact-title {
+  display: inline;
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.cta-contact-text {
   display: block;
   margin-left: 1.2em;
   font-size: clamp(16px, 1.39vw, 20px);
+  line-height: inherit;
 }
 
 @keyframes cta-card-drop {
@@ -1128,9 +1220,10 @@ html {
 }
 
 /* 中型桌機解決方案 */
-@media (min-width: 1025px) and (max-width: 1300px) {
+@media (min-width: 1025px) and (max-width: 1440px) {
   .solution-card-inner {
     width: min(100% - 96px, 1180px);
+
   }
 
   .solution-card-layout {
@@ -1146,8 +1239,8 @@ html {
     position: relative;
     z-index: 2;
     width: min(60vw, 620px);
-    margin-left: -56px;
     overflow: visible;
+
   }
 
   .solution-table {
@@ -1155,19 +1248,33 @@ html {
     table-layout: fixed;
   }
 
+  .solution-table thead th:first-child,
+  .solution-table tbody th {
+    width: 50%;
+  }
+
+  .solution-table thead th:not(:first-child),
+  .solution-table td {
+    width: 25%;
+  }
+
   .solution-table th,
   .solution-table td {
-    padding: 12px 12px;
+    padding: 13px 16px;
   }
 
   .solution-table thead th,
   .solution-table tbody th {
-    font-size: 18px;
+    font-size: 16px;
+    line-height: 1.2;
   }
 
   .solution-table tbody th span {
     font-size: 13px;
   }
+
+
+
 }
 
 /* 平板以下解決方案 */
@@ -1195,8 +1302,22 @@ html {
     transform: translate(-50%, -50%);
   }
 
+  .solution-table {
+    min-width: 500px;
+  }
+  .solution-table thead th:first-child,
+  .solution-table tbody th {
+    width: 50%;
+  }
+
+  .solution-table thead th:not(:first-child),
+  .solution-table td {
+    width: 25%;
+  }
+
   .solution-feature-section {
     height: 460vh;
+
   }
 
   .solution-feature-sticky {
@@ -1258,7 +1379,6 @@ html {
 
   .solution-feature-caption {
     left: 50%;
-/*    top: 82%;*/
     font-size: clamp(18px, 3vw, 24px);
   }
 
@@ -1320,13 +1440,6 @@ html {
 @media (max-width: 900px) {
   html {
     scroll-snap-type: none;
-  }
-
-  .application-section {
-    position: sticky;
-    top: var(--header-height);
-    height: calc(100svh - var(--header-height));
-    min-height: calc(100svh - var(--header-height));
   }
 
   .hero-section {
@@ -1478,15 +1591,20 @@ html {
 
 
 
-  .application-section {
-    position: sticky;
-    top: var(--header-height);
+  .application-carousel {
+    height: calc((100svh - var(--header-height)) * 3);
+    min-height: calc((100svh - var(--header-height)) * 3);
+    box-shadow: none;
+  }
+
+  .application-carousel-stage {
+    height: calc(100svh - var(--header-height));
+  }
+
+  .application-slide {
     align-items: center;
     justify-content: center;
-    height: calc(100svh - var(--header-height));
-    min-height: calc(100svh - var(--header-height));
     padding: 24px 20px;
-    box-shadow: none;
   }
 
 
@@ -1500,7 +1618,7 @@ html {
   }
 
 
-  .role-list span {
+  .role-list-text {
     white-space: normal;
   }
 
@@ -1566,7 +1684,7 @@ html {
   }
 
   .solution-table {
-    min-width: 370px;
+    min-width: 320px;
     table-layout: fixed;
   }
 

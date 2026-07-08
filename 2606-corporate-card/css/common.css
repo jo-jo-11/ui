@@ -79,7 +79,8 @@ button:focus-visible {
   outline-offset: 4px;
 }
 
-.sr-only {
+.sr-only,
+.visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -89,6 +90,11 @@ button:focus-visible {
   white-space: nowrap;
   border: 0;
   clip: rect(0, 0, 0, 0);
+}
+
+.section-anchor {
+  height: 1px;
+  scroll-margin-top: var(--header-height);
 }
 
 h1.seo-h1 {
@@ -174,12 +180,14 @@ h1.seo-h1 {
 .site-logo-divider {
   width: 1px;
   height: 24px;
-  background: #d3dfdc;
+  background: #cccccc;
 }
 
 .site-logo-gepay {
-  width: 72px;
+  width: 88px;
   height: auto;
+  position:relative;
+  top: 3px;
 }
 
 .site-nav {
