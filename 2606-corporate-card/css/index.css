@@ -1602,10 +1602,10 @@ html {
   .application-carousel-stage {
     height: calc(100dvh - var(--header-height));
     min-height: calc(100dvh - var(--header-height));
-  }
-*/
+  }*/
 
- .application-carousel {
+
+/* .application-carousel {
     height: calc((100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px)) * 3);
     min-height: calc((100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px)) * 3);
   }
@@ -1613,8 +1613,19 @@ html {
   .application-carousel-stage {
     height: calc(100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px));
     min-height: calc(100dvh - var(--header-height) - env(safe-area-inset-bottom, 0px));
+  }*/
+
+
+  .application-carousel {
+    height: calc(100dvh * 3);
+    min-height: calc(100dvh * 3);
+    box-shadow: none;
   }
 
+  .application-carousel-stage {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
 
   .application-slide {
     align-items: center;
