@@ -1,0 +1,26 @@
+/* 本機可變字型：保留原始 TTF，網頁載入壓縮後的 WOFF2。 */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 75% 100%;
+  font-display: swap;
+  src: url('../../font/Roboto-VariableFont_wdth,wght.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto Serif';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 50% 150%;
+  font-display: swap;
+  src: url('../../font/RobotoSerif-VariableFont_GRAD,opsz,wdth,wght.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Sans TC';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../../font/NotoSansTC-VariableFont_wght.woff2') format('woff2');
+}

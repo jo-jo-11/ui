@@ -1,0 +1,129 @@
+/* FAQ 頁籤與問答 */
+.faq-section {
+    background: linear-gradient(to bottom, #f2f7f4 0%, #f2f7f4 55%, #fefded 100%);
+    padding: 150px 0 100px;
+    min-height: 70vh;
+}
+
+.faq-section .ma-heading h2 {
+    margin: 0;
+    color: #104d48;
+    font-size: 30px;
+}
+
+.faq-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 36px auto 48px;
+}
+
+.faq-tabs button {
+    min-width: 140px;
+    font-size: 20px;
+}
+
+.faq-list {
+    display: grid;
+    gap: 16px;
+}
+
+.faq-list[hidden] {
+    display: none;
+}
+
+.faq-item {
+    background: #fff;
+    border-radius: 22px;
+}
+
+.faq-item summary {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 34px;
+    cursor: pointer;
+    color: #104d48;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.5;
+    list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item summary:focus-visible {
+    outline: 3px solid #009b95;
+    outline-offset: 3px;
+    border-radius: 22px;
+}
+
+.faq-number {
+    color: #009f99;
+    white-space: nowrap;
+}
+
+.faq-question {
+    flex: 1;
+}
+
+.faq-chevron {
+    width: 13px;
+    height: 13px;
+    margin: 7px 4px 0 12px;
+    border-right: 3px solid #202b2b;
+    border-bottom: 3px solid #202b2b;
+    transform: rotate(45deg);
+    flex: none;
+}
+
+.faq-item[open] .faq-chevron {
+    transform: rotate(225deg);
+    margin-top: 14px;
+}
+
+.faq-item[open] summary {
+    padding-bottom: 16px;
+}
+
+.faq-answer {
+    padding: 0 34px 24px;
+    color: #526663;
+    font-size: 18px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+    .faq-section {
+        padding: 120px 0 64px;
+    }
+
+    .faq-tabs {
+        margin: 28px auto 32px;
+    }
+
+    .faq-tabs button {
+        min-width: 0;
+        font-size: 18px;
+    }
+
+    .faq-list {
+        gap: 16px;
+    }
+
+    .faq-item {
+        border-radius: 16px;
+    }
+
+    .faq-item summary {
+        gap: 10px;
+        padding: 20px;
+        font-size: 18px;
+    }
+
+    .faq-answer {
+        padding: 0 20px 20px;
+        font-size: 16px;
+    }
+}

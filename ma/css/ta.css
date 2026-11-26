@@ -1,0 +1,49 @@
+/* TA 區塊背景與間距 */
+#section-1 {
+    background: #F5F8F5;
+    padding-bottom: 0;
+}
+
+#section-1 .ma-heading {
+    margin-bottom: 0;
+}
+
+#section-2 {
+    background: linear-gradient(180deg, #F5F8F5 0%, #FFFDEC 98.67%);
+}
+
+
+
+/* TA 專業領域與心得 */
+.ta-panel[hidden],
+.ta-story[hidden] {
+    display: none;
+}
+
+.ta-expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px;
+}
+
+.ta-tabs button {
+    min-width: 0;
+}
+
+@media (min-width: 769px) {
+    .ta-expertise-grid:has(> article:nth-child(2):last-child) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .ta-expertise-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .ta-expertise-grid article+article {
+        border-top: 1px solid var(--ma-line);
+        padding-top: 24px;
+    }
+}

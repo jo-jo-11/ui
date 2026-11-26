@@ -1,0 +1,1060 @@
+/* MA 子頁：沿用首頁字型、色彩及首屏山景動畫。 */
+.ma-main {
+    --ma-mint: #d5f1e7;
+    --ma-line: #dce7e4;
+}
+
+.ma-container {
+    width: calc(100% - 80px);
+    max-width: 1200px;
+    margin-inline: auto;
+}
+
+.ma-section {
+    padding: 100px 0 120px;
+}
+
+.ma-heading {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.ma-heading p {
+    margin-top: 12px;
+    font-size: 22px;
+    line-height: 1.5;
+}
+
+.ma-companies {
+    background: linear-gradient(#f5f8f5 65%, #fefded);
+}
+
+.ma-companies .ma-heading p {
+    font-size: 20px;
+    line-height: 1.7;
+    margin-top: 16px;
+}
+
+.ma-intro-paragraph { display: block; }
+.ma-intro-word { white-space: nowrap; }
+
+.ma-company-grid,
+.ma-training-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+}
+
+.ma-card {
+    background: white;
+    border: 1px solid var(--ma-line);
+    border-radius: 20px;
+    padding: 32px;
+}
+
+.ma-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 28px;
+    line-height: 1.4;
+    margin-bottom: 16px;
+}
+
+.ma-card h3 img {
+    width: auto;
+    height: auto;
+    max-width: 40px;
+    max-height: 40px;
+}
+
+.ma-company-grid h3 {
+    justify-content: center;
+}
+
+.ma-main ul {
+    margin: 0;
+    padding-left: 1.5em;
+}
+
+/* 首屏只調整文字組合，保留既有 Canvas 與進場。 */
+.ma-main .hero-content {
+    padding-top: clamp(220px, 22.3vw, 350px);
+}
+
+.ma-main .hero-content h2 {
+    font-size: 112px;
+    color: var(--home-brand);
+    line-height: 1;
+    letter-spacing: -3px;
+}
+
+.ma-main .ma-hero-name {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.ma-hero-name small {
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: 2px;
+}
+
+/* 英文標題與標語為第二段，沿用首頁滑入效果，晚 0.3 秒開始。 */
+.ma-main .ma-hero-support.animate__animated {
+    display: flow-root;
+    --animate-delay: 1.8s;
+}
+
+.ma-main .ma-hero-message {
+    margin-top: 16px;
+    font-size: 48px;
+    line-height: 1.25;
+    color: var(--home-ink);
+}
+
+.ma-main .hero-content .hero-serif {
+    font-size: 48px;
+    line-height: 1.25;
+}
+
+.ma-main .hero-tagline {
+    margin-top: 28px;
+}
+
+/* 業務頁籤與組別選單。 */
+.ma-business {
+    background: linear-gradient(#fefded, #fffdec);
+}
+
+.ma-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.ma-main button,
+.ma-main select {
+    font: inherit;
+}
+
+.ma-main button {
+    cursor: pointer;
+}
+
+.ma-main button:focus-visible,
+.ma-main select:focus-visible {
+    outline: 3px solid #157ba7;
+    outline-offset: 4px;
+}
+
+.ma-tabs button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--ma-mint);
+    color: var(--home-deep);
+    padding: 12px 16px;
+    font-size: 24px;
+    line-height: 1.4;
+    transition: background .2s, color .2s;
+}
+
+.ma-tabs img {
+    height: auto;
+    width: auto;
+    max-width: 28px;
+    max-height: 28px;
+}
+
+.ma-tabs button[aria-selected=true] {
+    background: var(--home-brand);
+    color: white;
+}
+
+.ma-tabs button[aria-selected=true] img:not([data-icon-white]) {
+    filter: brightness(0) invert(1);
+}
+
+.ma-tabs button:hover {
+    background: #b8e5d8;
+}
+
+.ma-tabs button[aria-selected=true]:hover {
+    background: var(--btn-hover);
+}
+
+.ma-business-layout {
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    gap: 48px;
+}
+
+.ma-group-menu>span {
+    display: block;
+    line-height: 1.1;
+    margin-bottom: 16px;
+}
+
+#group-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#group-buttons button {
+    padding: 14px 16px;
+    border: 1px solid var(--ma-line);
+    background: white;
+    color: var(--home-muted);
+    border-radius: 8px;
+    line-height: 1.2;
+    min-height: 50px;
+}
+
+#group-buttons button[aria-pressed=true] {
+    background: var(--ma-mint);
+    color: var(--home-brand);
+    font-weight: 500;
+}
+
+#group-select,
+.ma-group-dropdown {
+    display: none;
+}
+
+/* 手機組別選單沿用漢堡子選單的底色、分隔線及箭頭。 */
+.ma-group-menu {
+    position: relative;
+    z-index: 2;
+}
+
+.ma-group-dropdown {
+    position: relative;
+}
+
+#group-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 52px;
+    border: 1px solid #a7d9ca;
+    border-radius: 8px;
+    padding: 14px 16px;
+    background: #fff;
+    color: var(--home-deep);
+    text-align: left;
+}
+
+#group-toggle img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    transition: transform 200ms ease;
+}
+
+#group-toggle[aria-expanded="true"] {
+    color: var(--home-brand);
+
+}
+
+#group-toggle[aria-expanded="true"] img {
+    transform: rotate(180deg);
+}
+
+.ma-main #group-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 20;
+    width: 100%;
+    max-height: min(320px, 50dvh);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 6px;
+    background: rgba(6, 62, 58, 0.5);
+	backdrop-filter: blur(8px);
+    box-shadow: 0 8px 24px rgba(6, 62, 58, .16);
+}
+
+#group-options li {
+    margin: 0;
+    padding: 0;
+}
+
+#group-options li+li {
+    border-top: 1px solid #fff;
+}
+
+#group-options button {
+    display: block;
+    width: 100%;
+    padding: 14px 24px;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: center;
+}
+
+#group-options button:hover,
+#group-options button:focus-visible,
+#group-options button[aria-pressed="true"] {
+    background: rgba(6, 62, 58, 0.55);
+    color: #fff;
+}
+
+#group-options button:focus-visible {
+    outline-offset: -3px;
+}
+
+.ma-business-content {
+    background: rgba(255, 255, 255, .9);
+    border: 1px solid var(--ma-line);
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 581px;
+}
+
+.ma-business-intro {
+    padding: 48px 48px 32px;
+    border-bottom: 1px solid var(--ma-line);
+}
+
+.ma-main .ma-business-intro h3 {
+    color: var(--home-brand);
+    font-size: 32px;
+    line-height: 1.1;
+}
+
+.ma-en {
+    color: var(--home-brand);
+    margin-top: 8px !important;
+    line-height: 1.4;
+}
+
+.ma-business-intro>p:last-child {
+    margin-top: 8px;
+    line-height: 1.7;
+}
+
+.ma-expertise {
+    padding: 32px 48px 48px;
+}
+
+.ma-expertise h4 {
+    color: var(--home-deep);
+    font-size: 24px;
+    line-height: 1.1;
+    margin: 0 0 24px;
+}
+
+#expertise-grid,
+.ma-expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px;
+}
+
+.ma-expertise h5 {
+    color: var(--home-deep);
+    font-size: 24px;
+    margin: 8px 0 16px;
+    line-height: 1.2;
+}
+
+.ma-expertise .ma-number {
+    font-weight: 700;
+    color: var(--home-deep);
+    line-height: 1.1;
+}
+
+.ma-expertise p {
+    line-height: 1.7;
+}
+
+/* 培育階段：前兩張共用前六個月時間軸。 */
+.ma-training {
+    background: linear-gradient(#fefcec, #f1fff6 49%);
+}
+
+.ma-training-periods {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+    margin-bottom: 40px;
+}
+
+.ma-training-periods>div:first-child {
+    grid-column: span 2;
+}
+
+.ma-training-periods>div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--home-brand);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.ma-training-periods>div::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 4px;
+    background: var(--home-brand);
+    flex-shrink: 0;
+}
+
+.ma-training-card {
+    background: white;
+    border: 1px solid var(--ma-line);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.ma-training-image {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ma-training-image img {
+    width: 276px;
+    height: 200px;
+    object-fit: contain;
+    max-width: 90%;
+}
+
+.ma-training-copy {
+    padding: 32px 24px;
+}
+
+.ma-step {
+    font-size: 16px;
+    margin-bottom: 16px !important;
+}
+
+.ma-main .ma-training-copy h3 {
+    color: var(--home-brand);
+    font-size: 24px;
+    line-height: 1.4;
+    margin-bottom: 16px;
+}
+
+.ma-mobile-period {
+    display: none;
+}
+
+/* 心得輪播無計時器，資料可依公司擴充。 */
+.ma-stories {
+    background: linear-gradient(#f1fff6, #eef9fe 49%);
+}
+
+.ma-story-panel {
+    min-height: 430px;
+}
+
+.ma-story-carousel {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
+    align-items: center;
+    gap: 16px;
+}
+
+.ma-story-arrow {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1;
+    line-height: 0;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 50%;
+    transition: opacity .2s, transform .2s;
+}
+
+.ma-story-arrow img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+
+.ma-story-arrow:hover {
+    transform: scale(1.08);
+}
+
+.ma-story-arrow:disabled {
+    opacity: .3;
+    cursor: default;
+    transform: none;
+}
+
+.ma-story-stage {
+    min-height: 364px;
+    border-radius: 20px;
+    background: white;
+    touch-action: pan-y pinch-zoom;
+    user-select: none;
+}
+
+.ma-story-card {
+    display: grid;
+    grid-template-columns: 199px minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+    padding: 48px;
+}
+
+.ma-story-portrait {
+    width: 199px;
+    height: 199px;
+    overflow: hidden;
+    border-radius: 50%;
+    position: relative;
+}
+
+.ma-story-portrait img {
+    position: absolute;
+    width: 137.82%;
+    max-width: none;
+    height: 172.28%;
+    left: -18.91%;
+    top: 0;
+}
+
+.ma-story-name {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.ma-story-name h3 {
+    font-size: 32px;
+    line-height: 1.2;
+}
+
+.ma-story-name span {
+    font-size: 16px;
+}
+
+.ma-main .ma-story-school {
+    display: inline-block;
+    padding: 8px 24px;
+    background: #b3eaed;
+    color: var(--home-deep);
+    border-radius: 24px;
+    font-size: 16px;
+    line-height: 1.4;
+    margin-bottom: 16px;
+}
+
+.ma-story-copy {
+    color: #586d6a;
+    line-height: 1.75;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.ma-story-dots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 40px;
+}
+
+.ma-story-dots button {
+    width: 16px;
+    height: 16px;
+    border: 0;
+    border-radius: 50%;
+    padding: 0;
+    background: #c5e7e6;
+}
+
+.ma-story-dots button[aria-pressed=true] {
+    background: var(--home-brand);
+}
+
+.ma-story-empty {
+    min-height: 364px;
+}
+
+/* 資格與徵選流程。 */
+.ma-qualifications {
+    background: linear-gradient(#eef9fe, #fefded);
+}
+
+.ma-qualification-layout {
+    display: grid;
+    grid-template-columns: 345px minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+}
+
+.ma-qualification-layout>.ma-heading {
+    margin-bottom: 0;
+}
+
+.ma-qualification-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.ma-qualification-grid h3 {
+    margin-bottom: 12px;
+}
+
+.ma-selection {
+    background: #fefded;
+}
+
+.ma-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 24px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ma-selection-grid .ma-card {
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.ma-main .ma-date {
+    color: var(--home-brand);
+    font-size: 42px;
+    font-weight: 500;
+    line-height: 1.4;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--ma-line);
+    margin-bottom: 20px;
+    white-space: nowrap;
+}
+
+.ma-date small {
+    font-size: 20px;
+}
+
+.ma-selection-grid .ma-card>p:last-child {
+    font-size: 20px;
+    min-height: 70px;
+}
+
+/* 分層進場，未啟用 JS 時內容仍可正常閱讀。 */
+.ma-motion-ready .ma-layer {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity .7s ease, transform .8s cubic-bezier(.16, 1, .3, 1);
+    transition-delay: var(--ma-delay, 0ms);
+}
+
+.ma-motion-ready .ma-layer.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.ma-content-enter {
+    animation: ma-content-enter .45s cubic-bezier(.16, 1, .3, 1) both;
+}
+
+@keyframes ma-content-enter {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media(min-width:1441px) {
+    .ma-main .hero-content {
+        padding-top: 321px;
+    }
+}
+
+@media(max-width:1100px) {
+
+    .ma-company-grid,
+    .ma-training-grid {
+        gap: 20px;
+    }
+
+    .ma-card {
+        padding: 24px;
+    }
+
+    .ma-business-layout {
+        gap: 24px;
+        grid-template-columns: 180px minmax(0, 1fr);
+    }
+
+    .ma-business-intro {
+        padding: 32px;
+    }
+
+    .ma-expertise {
+        padding: 32px;
+    }
+
+    #expertise-grid,
+.ma-expertise-grid {
+        gap: 24px;
+    }
+
+    .ma-qualification-layout {
+        grid-template-columns: 260px minmax(0, 1fr);
+        gap: 24px;
+    }
+
+    .ma-selection-grid {
+        gap: 16px;
+    }
+
+    .ma-selection-grid .ma-card {
+        padding: 16px;
+    }
+
+    .ma-story-card {
+        gap: 24px;
+        padding: 32px;
+        grid-template-columns: 160px minmax(0, 1fr);
+    }
+
+    .ma-story-portrait {
+        width: 160px;
+        height: 160px;
+    }
+}
+
+@media(max-width:800px) {
+    .ma-container {
+        width: calc(100% - 40px);
+    }
+
+    .ma-section {
+        padding: 64px 0 72px;
+    }
+
+    .ma-heading {
+        margin-bottom: 32px;
+    }
+
+    .ma-main .ma-heading h2 {
+        font-size: 32px;
+    }
+
+    .ma-heading p,
+    .ma-companies .ma-heading p {
+        font-size: 18px;
+    }
+
+    .ma-company-intro .ma-intro-line { display: block; text-wrap: balance; }
+    .ma-company-intro .ma-intro-comma { display: none; }
+    .ma-company-intro .ma-intro-paragraph + .ma-intro-paragraph { margin-top: 16px; }
+
+
+    .ma-company-grid,
+    .ma-training-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .ma-card h3 {
+        font-size: 24px;
+    }
+
+    .ma-company-grid > .ma-card > h3 {
+        gap: 4px;
+    }
+
+    .ma-company-grid > .ma-card > h3 > img,
+    .ma-qualification-grid > .ma-card > h3 > img {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        object-fit: contain;
+    }
+
+    .ma-tabs {
+        gap: 10px;
+        margin-bottom: 28px;
+    }
+
+    .ma-tabs button {
+        font-size: 20px;
+        padding: 12px 8px;
+        gap: 6px;
+    }
+
+    .ma-tabs img {
+        max-width: 24px;
+        max-height: 24px;
+    }
+
+    .ma-business-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+    }
+
+    #group-buttons {
+        display: none;
+    }
+
+    .ma-group-dropdown {
+        display: block;
+    }
+
+    .ma-business-content {
+        min-height: 0;
+    }
+
+    .ma-group-menu>span {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .ma-training-periods {
+        display: none;
+    }
+
+    .ma-mobile-period {
+        display: block;
+        padding: 12px 16px;
+        text-align: center;
+        color: var(--home-brand);
+        background: #edf9f3;
+        font-weight: 700;
+    }
+
+    .ma-training-copy {
+        padding: 24px 20px;
+    }
+
+    .ma-qualification-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 32px;
+    }
+
+    .ma-selection-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ma-story-card {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 28px;
+        gap: 24px;
+    }
+
+    .ma-story-portrait {
+        align-self: center;
+    }
+
+    .ma-story-carousel {
+        grid-template-columns: 32px minmax(0, 1fr) 32px;
+        gap: 8px;
+    }
+
+    .ma-story-dots {
+        margin-top: 24px;
+    }
+
+    .ma-main .hero-content {
+        padding-top: 180px;
+    }
+
+    .ma-main .hero-content h2 {
+        font-size: 90px;
+    }
+
+    .ma-main .ma-hero-message,
+    .ma-main .hero-content .hero-serif {
+        font-size: 38px;
+    }
+
+    .ma-hero-name small {
+        font-size: 28px;
+    }
+}
+
+@media(max-width:480px) {
+    .ma-main {
+        font-size: 16px;
+    }
+
+    .ma-main .hero-content {
+        padding-top: 140px;
+    }
+
+    .ma-main .hero-content h2 {
+        font-size: 76px;
+    }
+
+    .ma-hero-name small {
+        font-size: 24px;
+    }
+
+    .ma-main .ma-hero-message,
+    .ma-main .hero-content .hero-serif {
+        font-size: 30px;
+    }
+
+    .ma-main .hero-tagline {
+        font-size: 20px;
+        margin-top: 8px;
+    }
+
+    .ma-company-grid {
+        gap: 12px;
+    }
+
+    .ma-company-grid .ma-card {
+        padding: 20px 16px;
+    }
+
+    .ma-card h3 {
+        font-size: 22px;
+    }
+
+    .ma-tabs {
+        gap: 8px;
+    }
+
+    .ma-tabs button {
+        font-size: 17px;
+        gap: 4px;
+        padding: 12px 4px;
+    }
+
+    .ma-tabs > button > img {
+        display: none;
+    }
+
+    .ma-business-intro,
+    .ma-expertise {
+        padding: 24px;
+    }
+
+    #expertise-grid,
+.ma-expertise-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+    }
+
+    .ma-expertise h5 {
+        margin-bottom: 12px;
+    }
+
+    .ma-expertise article+article {
+        border-top: 1px solid var(--ma-line);
+        padding-top: 24px;
+    }
+
+    .ma-training-grid,
+    .ma-qualification-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ma-training .ma-training-card > .ma-training-image {
+        height: 150px;
+        overflow: hidden;
+    }
+
+    .ma-training-copy {
+        padding: 24px;
+    }
+
+    .ma-story-card {
+        padding: 24px 20px;
+    }
+
+    .ma-story-carousel {
+        grid-template-columns: 26px minmax(0, 1fr) 26px;
+        gap: 4px;
+    }
+
+    .ma-story-name h3 {
+        font-size: 28px;
+    }
+
+    .ma-story-name span {
+        font-size: 14px;
+    }
+
+    .ma-main .ma-story-school {
+        padding: 8px 14px;
+        font-size: 14px;
+    }
+
+    .ma-selection-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .ma-selection-grid .ma-card>p:last-child {
+        font-size: 18px;
+    }
+
+    .ma-main .ma-date {
+        font-size: 38px;
+    }
+
+    .ma-date small {
+        font-size: 18px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    .ma-motion-ready .ma-layer {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .ma-content-enter {
+        animation: none;
+    }
+
+    .ma-story-arrow,
+    .ma-tabs button {
+        transition: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #group-toggle img {
+        transition: none;
+    }
+}
+
+/* 依頁籤隱藏 HTML 中未選取的內容。 */
+.ma-group-content[hidden], .ma-story-item[hidden], #group-buttons button[hidden] { display: none; }

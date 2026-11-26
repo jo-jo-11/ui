@@ -1,0 +1,1740 @@
+/* GTM 防閃爍：首頁維持目前停用狀態 */
+html.async-hide:not(.async-hide-disabled) { opacity: 0 !important; }
+
+:root {
+    --home-brand: #00a19b;
+    --home-deep: #063e3a;
+    --home-muted: #3d524f;
+    --home-ink: #123c3a;
+    --btn-hover: #007a7a;
+    --home-radius: 20px;
+    --home-font: "Roboto", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 96px;
+}
+
+body {
+    margin: 0;
+    font-family: var(--home-font);
+}
+
+.home-main {
+    color: var(--home-muted);
+    font-size: 18px;
+    line-height: 1.75;
+}
+
+.home-main *,
+.home-main *::before,
+.home-main *::after {
+    box-sizing: border-box;
+}
+
+.home-main [hidden] {
+    display: none !important;
+}
+
+.home-main h2,
+.home-main h3,
+.home-main p,
+.home-main figure {
+    margin: 0;
+}
+
+.home-main img {
+    display: block;
+    max-width: 100%;
+}
+
+.home-main h2:where(:not(#hero-title)),
+.home-main h3 {
+    color: var(--home-deep);
+}
+
+.home-main section {
+    scroll-margin-top: 96px;
+}
+
+.home-container {
+    width: calc(100% - 200px);
+    max-width: 1240px;
+    margin-inline: auto;
+}
+
+.home-section {
+    padding: 100px 0 120px;
+}
+
+.section-heading {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.home-main h2:where(:not(#hero-title)) {
+    font-size: 44px;
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+.section-heading>p,
+.section-lead {
+    margin-top: 12px;
+    font-size: 22px;
+    line-height: 1.5;
+}
+
+.skip-link {
+    position: fixed;
+    z-index: 100;
+    left: 16px;
+    top: -80px;
+    padding: 12px 20px;
+    color: #fff;
+    background: var(--home-deep);
+    border-radius: 4px;
+}
+
+.skip-link:focus {
+    top: 12px;
+}
+
+/* 錨點跳轉保留區塊焦點，不顯示整屏外框；互動元件仍保留焦點提示。 */
+.home-main section[tabindex="-1"]:focus {
+    outline: none;
+}
+
+.home-main a:focus-visible,
+.home-main button:focus-visible,
+.learning-track:focus-visible,
+#gotop:focus-visible {
+    outline: 3px solid var(--home-deep);
+    outline-offset: 5px;
+}
+
+.home-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 56px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    background: var(--home-brand);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: .5px;
+    transition: background-color 180ms ease, transform 180ms ease;
+}
+
+
+.home-button:active {
+    transform: translateY(2px);
+}
+
+.home-main .button-arrow {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    transform: rotate(-45deg);
+}
+
+/* 01 首屏主視覺 */
+.home-hero {
+    position: relative;
+    min-height: 700px;
+    height: min(61.6667vw, 1000px);
+    background: #f5f8f5;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.hero-content {
+    padding-top: clamp(168px, 14.4444vw, 234px);
+}
+
+.home-main .hero-content h2 {
+    max-width: 650px;
+    color: var(--home-ink);
+    font-size: clamp(80px, 8.1944vw, 132px);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -5px;
+}
+
+.hero-content h2>span {
+    display: block;
+}
+
+.home-main .hero-content .hero-serif {
+    color: var(--home-brand);
+    font-family: "Roboto Serif", Georgia, serif;
+    font-size: clamp(64px, 6.5278vw, 106px);
+    line-height: 1.25;
+    letter-spacing: 0;
+    font-optical-sizing: auto;
+}
+
+.home-main .hero-subtitle {
+    margin-top: 28px;
+    font-family: "Noto Sans TC", sans-serif;
+    color: var(--home-ink);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.55;
+}
+
+.home-main .hero-tagline {
+    margin-top: 16px;
+    color: #586d6a;
+    font-size: 20px;
+    line-height: 1.08;
+}
+
+/* 02 計畫卡片 */
+.plans-section {
+    background: linear-gradient(180deg, #f5f8f5 19.407%, #fefded);
+}
+
+.plans-section .home-container,
+.projects-section .home-container {
+    max-width: 1200px;
+}
+
+.plan-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+}
+
+.plan-card {
+    color: inherit;
+    /* 整張卡片為連結，維持原本內文顏色。 */
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: var(--home-radius);
+    background: #fff;
+    transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px #063e3a0d;
+}
+
+.home-main .plan-picture {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 377 / 200;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    /* 讓放大過程有平滑的動畫 */
+}
+
+.plan-card:hover .plan-picture {
+    transform: scale(1.1);
+}
+
+
+.plan-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    padding: 32px;
+}
+
+.plan-name {
+    min-height: 104px;
+}
+
+.home-main .plan-name h3 {
+    color: var(--home-brand);
+    font-size: 40px;
+    line-height: 1.2;
+}
+
+.home-main .plan-name p {
+    margin-top: 8px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.plan-description {
+    flex: 1;
+    min-height: 153px;
+    line-height: 1.7;
+}
+
+.plan-content .home-button {
+    margin-top: auto;
+}
+
+/* 03 金控專案 */
+.projects-section {
+    background: linear-gradient(#fffdec, #f1fff6);
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: 511fr 624fr;
+    align-items: center;
+    gap: 64px;
+}
+
+.home-main .project-picture {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 511 / 512;
+    object-fit: cover;
+    border-radius: 300px 300px 20px 300px;
+}
+
+.project-stories article {
+    padding: 28px 0;
+}
+
+.home-main .project-stories h3 {
+    margin-bottom: 12px;
+    font-size: 28px;
+    line-height: 1.4;
+}
+
+.project-stories p {
+    line-height: 1.75;
+}
+
+/* 04 國際歷練與共用輪播操作 */
+.international-section {
+    background: linear-gradient(#f1fff6 57.244%, #eef9fe);
+}
+
+.international-grid {
+    display: grid;
+    grid-template-columns: 366fr 750fr;
+    align-items: center;
+    gap: 124px;
+}
+
+.home-main .international-copy>p:last-child {
+    margin-top: 16px;
+}
+
+.international-carousel {
+    min-width: 0;
+}
+
+.international-slide {
+    margin-bottom: 24px;
+}
+
+.international-carousel.is-enhanced .international-slide {
+    margin-bottom: 0;
+}
+
+.international-image {
+    aspect-ratio: 750 / 500;
+    overflow: hidden;
+    border-radius: 300px;
+}
+
+.home-main .international-image>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.home-main .international-slide:first-child .international-image>img {
+    transform: scale(1.3914);
+    transform-origin: 43.27% 36.91%;
+}
+
+.home-main figcaption {
+    margin-top: 16px;
+    font-size: 16px;
+    line-height: 1.55;
+}
+
+.international-slide figcaption {
+    text-align: center;
+}
+
+.carousel-controls {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.is-enhanced .carousel-controls {
+    display: flex;
+}
+
+.carousel-dots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.carousel-dot {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 8px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.carousel-arrow {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid #94c9c1;
+    border-radius: 50%;
+    color: var(--home-deep);
+    background: transparent;
+    font: inherit;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 180ms ease;
+}
+
+.carousel-arrow:hover {
+    background: #d4eeea;
+}
+
+/* 05 金融科技 */
+.fintech-section {
+    background: #eef9fe;
+}
+
+.fintech-section .section-heading {
+    margin-bottom: 48px;
+}
+
+.home-main .fintech-section h2 {
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 52px;
+    font-weight: 500;
+}
+
+.fintech-section .section-heading>p {
+    font-size: 24px;
+}
+
+.fintech-chapters {
+    display: grid;
+    gap: 100px;
+}
+
+.fintech-chapter {
+    display: grid;
+    grid-template-columns: 630fr 538fr;
+    align-items: center;
+    gap: 72px;
+}
+
+.fintech-chapter figure {
+    position: relative;
+    min-width: 0;
+}
+
+.home-main .fintech-chapter figcaption {
+    position: absolute;
+    right: 8px;
+    bottom: 12px;
+    max-width: calc(100% - 16px);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background-color: rgb(255 255 255 / 70%);
+}
+
+.home-main .fintech-chapter figure>img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 630 / 400;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.chapter-2 {
+    grid-template-columns: 538fr 630fr;
+}
+
+.chapter-2 figure {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.chapter-2 .fintech-copy {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.home-main .fintech-copy h3 {
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 1.55;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 24px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.skill-tags li {
+    min-width: 126px;
+    padding: 10px 20px;
+    border-radius: 24px;
+    background: #b3eaed;
+    color: var(--home-deep);
+    font-size: 16px;
+    line-height: 1.55;
+    text-align: center;
+}
+
+.chapter-2 .skill-tags li {
+    background: #f8dcd6;
+}
+
+.chapter-3 .skill-tags li {
+    background: #f7ed99;
+}
+
+.fintech-copy p {
+    line-height: 1.7;
+}
+
+/* 06 多元學習 */
+.learning-section {
+    overflow: hidden;
+    background: linear-gradient(#eef9fe, #fffdec);
+}
+
+.learning-track {
+    position: relative;
+    display: flex;
+    gap: 32px;
+    width: 100%;
+    padding-inline: max(24px, calc((100% - 828px) / 2));
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.learning-card {
+    display: grid;
+    grid-template-columns: 346px minmax(0, 1fr);
+    flex: 0 0 828px;
+    min-width: 0;
+    height: 421px;
+    overflow: hidden;
+    border-radius: var(--home-radius);
+    background: #fff;
+    scroll-snap-align: center;
+}
+
+.learning-copy {
+    min-width: 0;
+    padding: 48px 48px 32px;
+}
+
+.home-main .learning-copy h3 {
+    margin-bottom: 16px;
+    color: var(--home-brand);
+    font-size: 32px;
+    line-height: 1.4;
+}
+
+.learning-copy p {
+    line-height: 1.7;
+}
+
+.home-main .learning-card>img {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    object-fit: cover;
+}
+
+.learning-section .carousel-controls {
+    margin-top: 16px;
+}
+
+/* 07 山形CTA */
+.apply-section {
+    position: relative;
+    min-height: 400px;
+    isolation: isolate;
+    overflow: hidden;
+    background: url("../img/apply-mountain-repeat.svg") repeat-x center bottom / 1320px 400px, linear-gradient(#fffdec, #d8f1fa 76.828%);
+    text-align: center;
+}
+
+.apply-content {
+    position: relative;
+    z-index: 1;
+    padding-top: 80px;
+    padding-bottom: 100px;
+}
+
+.home-main .apply-content h2 {
+    font-size: 48px;
+    line-height: 1.3;
+}
+
+.apply-content .apply-button {
+    min-width: 150px;
+    margin-top: 20px;
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.apply-mountain,
+.apply-atmosphere {
+    position: absolute;
+    z-index: -1;
+}
+
+.home-main .apply-atmosphere {
+    width: auto;
+    height: 100%;
+}
+
+/* 浮動按鈕 */
+.float_btn .float_action_btn {
+    width: 66px;
+    height: 66px;
+    border: 1px solid var(--home-brand);
+    background: #fff;
+    color: var(--home-brand);
+}
+
+.float_btn .float_action_btn a {
+    color: var(--home-brand);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#gotop {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+@media (min-width: 1600px) {
+    .home-main .hero-content h2 {
+        font-size: 118px;
+    }
+
+    .home-main .hero-content .hero-serif {
+        font-size: 94px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .home-container {
+        width: calc(100% - 96px);
+    }
+
+    .hero-content {
+        padding-top: 170px;
+    }
+
+    .plan-grid {
+        gap: 24px;
+    }
+
+    .plan-content {
+        padding: 24px;
+    }
+
+    .projects-grid,
+    .fintech-chapter {
+        gap: 40px;
+    }
+
+    .international-grid {
+        gap: 48px;
+    }
+
+    .home-main h2:where(:not(#hero-title)) {
+        font-size: 38px;
+    }
+
+    .home-main .fintech-copy h3 {
+        font-size: 32px;
+    }
+
+    .home-main .fintech-section h2 {
+        font-size: 44px;
+    }
+}
+
+@media (max-width: 900px) {
+    .home-section {
+        padding: 72px 0 80px;
+    }
+
+    .home-container {
+        width: calc(100% - 64px);
+    }
+
+    .home-hero {
+        height: 720px;
+        min-height: 0;
+    }
+
+    .hero-content {
+        padding-top: 150px;
+    }
+
+    .home-main .hero-content h2 {
+        font-size: 76px;
+        letter-spacing: -3px;
+    }
+
+    .home-main .hero-content .hero-serif {
+        font-size: 60px;
+    }
+
+    .home-main .hero-subtitle {
+        font-size: 22px;
+    }
+
+    .plan-grid {
+        grid-template-columns: 1fr;
+        max-width: 580px;
+        margin-inline: auto;
+    }
+
+    .plan-card {
+        display: grid;
+        grid-template-columns: 40% minmax(0, 1fr);
+        align-items: center;
+    }
+
+    .plan-content {
+        gap: 16px;
+        padding: 24px;
+    }
+
+    .plan-name,
+    .plan-description {
+        min-height: 0;
+    }
+
+    .plan-description {
+        font-size: 16px;
+    }
+
+    .projects-grid {
+        gap: 32px;
+        grid-template-columns: 40% minmax(0, 1fr);
+    }
+
+    .project-stories article {
+        padding: 16px 0;
+    }
+
+    .home-main .project-stories h3 {
+        font-size: 24px;
+    }
+
+    .international-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .international-copy {
+        max-width: 620px;
+    }
+
+    .international-carousel {
+        width: 100%;
+        max-width: 750px;
+        margin-inline: auto;
+    }
+
+    .fintech-chapters {
+        gap: 64px;
+    }
+
+    .fintech-chapter {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .chapter-2 figure,
+    .chapter-2 .fintech-copy {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .home-main .fintech-copy h3 br {
+        display: none;
+    }
+
+    .skill-tags {
+        margin-block: 20px;
+    }
+
+    .learning-card {
+        flex-basis: 680px;
+        grid-template-columns: 300px minmax(0, 1fr);
+    }
+
+    .learning-track {
+        padding-inline: max(24px, calc((100% - 680px) / 2));
+    }
+
+    .learning-copy {
+        padding: 36px 32px;
+    }
+
+    .home-main .learning-copy h3 {
+        font-size: 28px;
+    }
+
+    .home-main .apply-content h2 {
+        font-size: 38px;
+    }
+}
+
+@media (max-width: 680px) {
+    .learning-track {
+        --learning-card-inset: 30px;
+        gap: 16px;
+        padding-inline: var(--learning-card-inset);
+        align-items: stretch;
+    }
+
+    .learning-card {
+        flex-basis: calc(100vw - 2 * var(--learning-card-inset));
+        height: auto;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 230px;
+    }
+
+    .learning-copy {
+        padding: 28px;
+    }
+
+    .home-main .learning-copy h3 {
+        font-size: 26px;
+    }
+
+    .learning-copy p {
+        min-height: 136px;
+    }
+
+    .home-main .learning-card>img {
+        height: 230px;
+    }
+}
+
+@media (600px < width <= 680px) {
+    .learning-track {
+        --learning-card-inset: 100px;
+    }
+}
+
+@media (max-width: 600px) {
+    .home-main {
+        font-size: 16px;
+    }
+
+    .home-container {
+        width: calc(100% - 60px);
+    }
+
+    .home-section {
+        padding: 64px 0 72px;
+    }
+
+    .home-main h2:where(:not(#hero-title)),
+    .home-main .fintech-section h2 {
+        font-size: 30px;
+        line-height: 1.4;
+    }
+
+    .section-heading {
+        margin-bottom: 32px;
+    }
+
+    .section-heading>p,
+    .fintech-section .section-heading>p,
+    .section-lead {
+        font-size: 18px;
+        line-height: 1.6;
+    }
+
+    .home-hero {
+        height: 780px;
+    }
+
+    .hero-content {
+        padding-top: 100px;
+    }
+
+    .home-main .hero-content h2 {
+        font-size: clamp(48px, 13.8vw, 74px);
+        line-height: 1.1;
+        letter-spacing: -2px;
+    }
+
+    .home-main .hero-content .hero-serif {
+        font-size: clamp(37px, 10.7vw, 57px);
+        line-height: 1.4;
+    }
+
+    .home-main .hero-subtitle {
+        margin-top: 20px;
+        font-size: 20px;
+    }
+
+    .home-main .hero-tagline {
+        margin-top: 12px;
+        font-size: 18px;
+        line-height: 1.4;
+    }
+
+    .plan-grid {
+        gap: 24px;
+        max-width: 420px;
+    }
+
+    .plan-card {
+        display: flex;
+    }
+
+    .plan-content {
+        width: 100%;
+        padding: 28px;
+    }
+
+    .home-main .plan-name h3 {
+        font-size: 36px;
+    }
+
+    .plan-description {
+        font-size: 18px;
+    }
+
+    .home-main .plan-name p {
+        margin-top: 6px;
+    }
+
+    .plan-content .home-button {
+        margin-top: 4px;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-main .project-picture {
+        max-width: 440px;
+        margin-inline: auto;
+    }
+
+    .project-stories article {
+        padding: 16px 0;
+    }
+
+    .home-main .project-stories h3 {
+        font-size: 20px;
+    }
+
+    .international-image {
+        border-radius: 160px;
+    }
+
+    .home-main figcaption {
+        font-size: 14px;
+    }
+
+    .fintech-section .section-heading {
+        margin-bottom: 32px;
+    }
+
+    .fintech-chapters {
+        gap: 80px;
+    }
+
+    .fintech-chapter {
+        gap: 8px;
+    }
+
+    .home-main .fintech-copy h3 {
+        font-size: 20px;
+        line-height: 1.5;
+    }
+
+    .home-main .fintech-copy h3 br {
+        display:none;
+    }
+
+    .skill-tags {
+        gap: 10px;
+        margin-block: 16px;
+    }
+
+    .skill-tags li {
+        min-width: 110px;
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    .apply-section {
+        min-height: 400px;
+    }
+
+    .apply-content {
+        padding-top: 64px;
+        padding-bottom: 120px;
+    }
+
+    .home-main .apply-content h2 {
+        font-size: 30px;
+        line-height: 1.5;
+        text-wrap: balance;
+    }
+
+    .apply-title-second-line {
+        display: block;
+    }
+
+    .home-main .mountain-left {
+        bottom: -8px;
+        width: 110%;
+        left: -40%;
+    }
+
+    .home-main .mountain-right {
+        bottom: -10px;
+        width: 130%;
+        right: -30%;
+    }
+}
+
+@media (max-width: 768px) {
+    .float_btn {
+        bottom: 24px;
+        width: 56px;
+        max-width: 56px;
+    }
+
+    .float_btn .float_action_group {
+        position: static;
+        display: flex;
+    }
+
+    .float_btn .float_action_group .float_action_btn {
+        display: flex;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        margin: 8px auto;
+    }
+
+    .float_btn .float_action_group .float_action_btn a {
+        padding: 0;
+        font-size: 14px;
+    }
+
+    .float_btn .float_action_group .float_action_btn .break {
+        display: block;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .home-button,
+    .plan-card {
+        transition: none;
+    }
+}
+
+/* 首頁動畫容器：維持滿版首屏；覆蓋上方舊的固定高度設定。
+ * Canvas 的像素尺寸由 JS 自動更新，不要另外指定 145% 寬度或 object-fit。
+ * 文字在上層，背景不攔截點擊；滑鼠事件由整個首屏接收，紙飛機仍可產生視差。
+ * 要調標題位置，修改上方 .hero-content 的 padding-top，不要移動 Canvas。 */
+.home-main .home-hero {
+    height: 100vh;
+    min-height: 0;
+}
+
+.home-hero .hero-animation {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* 首屏文字由左至右進場（沿用 Animate.css 的類別命名，使用本機 CSS）。
+ * index.html 的 .hero-content 同時包住英文標題、中文副標與英文標語，整組一起移入。
+ * --animate-duration：進場時間，1s = 1 秒；想放慢可改成 1.5s。
+ * 只在載入時播放一次；不循環、不消散。山體與紙飛機的動畫維持獨立。
+ */
+.home-hero .animate__animated {
+    --animate-duration: 2s;
+    --animate-delay: 1.5s;
+    animation-duration: var(--animate-duration);
+    animation-delay: var(--animate-delay);
+    animation-fill-mode: both;
+}
+
+.home-hero .animate__slideInLeft {
+    animation-name: hero-slide-in-left;
+}
+
+@keyframes hero-slide-in-left {
+    from {
+        transform: translate3d(-180%, 0, 0);
+        visibility: visible;
+    }
+
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/*.home-hero .animate__animated { 
+  --animate-duration: 2s; 
+  animation-duration: var(--animate-duration); 
+  animation-delay: var(--animate-delay, 0.6s); 
+  animation-fill-mode: both; 
+}
+
+.home-hero .animate__slideInLeft { 
+  animation-name: hero-slide-in-left; 
+}
+
+@keyframes hero-slide-in-left {
+  from { transform: translate3d(-100%, 0, 0); visibility: visible; }
+  to { transform: translate3d(0, 0, 0); }
+}*/
+
+/* 開啟系統「減少動態效果」時直接顯示文字。 */
+@media (prefers-reduced-motion: reduce) {
+    .home-hero .animate__animated {
+        animation: none;
+    }
+}
+
+/* 校園徵才與回頂端：使用同一個垂直容器，大小不同也維持中心對齊。
+ * align-items: center 控制水平中心；gap 控制兩顆按鈕的上下間距。 */
+.float_btn .float_action_group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.float_btn .float_action_group .float_action_btn,
+.float_btn #gotop {
+    flex: none;
+    margin: 0;
+}
+
+.float_btn #gotop {
+    display: block;
+    width: 50px;
+    max-width: 50px;
+}
+
+.float_btn #gotop img {
+    margin: 0 auto;
+}
+
+/* 輪播圓點：純 CSS，不依賴圖片；數量由 home.js 自動計算。 */
+.carousel-dot::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #c4dbd8;
+}
+
+.carousel-dot[aria-pressed="true"]::before {
+    background: var(--home-brand);
+}
+
+.carousel-controls {
+    flex-wrap: wrap;
+}
+
+/* 超寬螢幕一次顯示至少三張完整卡片及鄰近卡片，卡片不隨螢幕無限放大。 */
+@media (min-width: 2560px) {
+    .learning-track {
+        gap: 32px;
+        padding-inline: 32px;
+    }
+
+    .learning-card {
+        flex-basis: 720px;
+        grid-template-columns: 300px minmax(0, 1fr);
+    }
+}
+
+.footer-contact {
+    float: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+    height: auto;
+    padding: 16px 20px;
+    background: #81b1cf;
+}
+
+.footer-contact-link {
+    flex: 0 0 40px;
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+}
+
+.footer-contact-link img {
+    display: block;
+    width: 40px;
+    height: 40px;
+}
+
+.footer-contact-link:focus-visible {
+    outline: 2px solid #063e3a;
+    outline-offset: 4px;
+}
+
+
+/* 平板與手機：等比縮小山景，讓同一視窗看見更多山峰。 */
+@media (max-width: 1100px) {
+    .apply-section {
+        background-size: 660px 200px, 100% 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .apply-section {
+        background-size: 560px 169.697px, 100% 100%;
+    }
+}
+
+/* 國際照片 Cross-fade：所有投影片重疊，僅活動項目可操作／讀取。
+ * 900ms 是淡化時間；grid 保留最高圖說的高度，切換不推動下方內容。 */
+.international-carousel.is-enhanced .international-slides {
+    display: grid;
+    isolation: isolate;
+}
+
+.international-carousel.is-enhanced .international-slide {
+    grid-area: 1 / 1;
+    min-width: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 900ms ease-in-out, visibility 0s 900ms;
+}
+
+.international-carousel.is-enhanced .international-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .international-carousel.is-enhanced .international-slide {
+        transition: none;
+    }
+}
+
+/* 整張卡片 Hover*/
+.plan-card:focus-within .home-button {
+    background-color: var(--btn-hover);
+}
+
+.plan-card:focus-within .button-arrow {
+    translate: 3px -3px;
+}
+
+@media (hover:hover) and (pointer:fine) {
+
+    .plan-card:hover .home-button,
+    .apply-content .apply-button:hover {
+        background-color: var(--btn-hover);
+    }
+
+    .float_btn .float_action_btn:hover {
+        background-color: #f5f8f5;
+        color: #00a19b;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px #063e3a26;
+    }
+
+
+    .float_btn #gotop:hover {
+        transform: translateY(-3px);
+        filter: brightness(.88);
+        box-shadow: 0 6px 18px #063e3a26;
+    }
+}
+
+.float_btn .float_action_btn,
+.float_btn #gotop {
+    border-radius: 50%;
+    transition: background-color 220ms ease, color 220ms ease, transform 250ms ease, box-shadow 250ms ease, filter 220ms ease;
+}
+
+.float_btn .campus-open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.15;
+    cursor: pointer;
+}
+
+.float_btn .campus-open .break {
+    display: none;
+}
+
+.float_btn .float_action_btn:active,
+.float_btn #gotop:active {
+    transform: scale(.95);
+}
+
+.campus-open:focus-visible {
+    outline: 2px solid #063e3a;
+    outline-offset: 4px;
+}
+
+/* 校園徵才彈窗：max-height 保留手機上下空間；內容過長只捲動面板。 */
+body.campus-is-open {
+    overflow: hidden;
+}
+
+.campus-dialog {
+    position: fixed;
+    width: min(640px, calc(100% - 48px));
+    max-height: calc(100dvh - 48px);
+    margin: auto;
+    padding: 40px 32px 28px;
+    border: 0;
+    border-radius: 20px;
+    background: #fff;
+    color: #3d524f;
+    font-family: var(--home-font);
+    font-size: 16px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.campus-dialog::backdrop {
+    background: #000b;
+}
+
+.campus-dialog[open] {
+    animation: campus-enter 260ms cubic-bezier(.16, 1, .3, 1);
+}
+
+.campus-dialog h2 {
+    margin: 0 0 28px;
+    text-align: center;
+    color: #063e3a;
+    font-size: 24px;
+    line-height: 1.4;
+}
+
+.campus-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #8b9098;
+    color: #fff;
+    font: 30px/1 sans-serif;
+    cursor: pointer;
+}
+
+/* 關閉叉號用兩條線繪製，交叉點固定在按鈕的幾何中心，不受字體基線影響。 */
+.campus-close::before,
+.campus-close::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+    pointer-events: none;
+}
+
+.campus-close::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.campus-close::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.campus-tabs {
+    display: flex;
+    justify-content: center;
+    padding-inline: 6%;
+    border-bottom: 1px solid #bfc6ca;
+}
+
+.campus-tabs button {
+    flex: 1;
+    padding: 12px 8px;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    color: #3d524f;
+    font: inherit;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.campus-tabs button[aria-selected="true"] {
+    color: #00a19b;
+    border-bottom-color: #00a19b;
+}
+
+.campus-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.campus-table th,
+.campus-table td {
+    padding: 12px 8px;
+    font-weight: 400;
+}
+
+.campus-table tr {
+    border-bottom: 1px solid #bfc6ca;
+}
+
+.campus-table tbody tr:last-child {
+    border-bottom: 0;
+}
+
+.campus-pending {
+    padding: 24px 12px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.campus-dialog [hidden] {
+    display: none;
+}
+
+.campus-dialog button:focus-visible,
+.campus-dialog [role="tabpanel"]:focus-visible {
+    outline: 2px solid #00a19b;
+    outline-offset: 3px;
+}
+
+@keyframes campus-enter {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media(max-width:600px) {
+    .campus-dialog {
+        width: calc(100% - 32px);
+        max-height: calc(100dvh - 32px);
+        padding: 52px 16px 28px;
+        border-radius: 20px;
+    }
+
+    .campus-dialog h2 {
+        margin-bottom: 24px;
+        font-size: 24px;
+    }
+
+    .campus-close {
+        top: 16px;
+        right: 16px;
+    }
+
+    .campus-tabs button {
+        font-size: 18px;
+    }
+
+    .campus-table {
+        font-size: 16px;
+    }
+
+    .campus-table th,
+    .campus-table td {
+        padding: 12px 4px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    .campus-dialog[open] {
+        animation: none;
+    }
+
+    .float_btn .float_action_btn,
+    .float_btn #gotop {
+        transition: none;
+    }
+}
+
+/* ===== 首頁動態效果：進場、照片視差、Hover 與頁尾背景光 =====
+ * 原 home-motion.css 已合併至此；放在檔案最後，維持原本的樣式覆蓋順序。
+ * 滾動與視差的 JS 參數仍在 js/home-motion.js。
+ */
+/* 動態調校：位移越小越安定；duration 越長越慢。JS 觸發只播一次。 */
+:root {
+    --motion-ease: cubic-bezier(.16, 1, .3, 1);
+    --anchor-offset: 80px;
+}
+
+html {
+    scroll-padding-top: var(--anchor-offset);
+}
+
+.home-main section {
+    scroll-margin-top: 0;
+}
+
+html.is-anchor-moving {
+    scroll-behavior: auto;
+}
+
+.motion-reveal {
+    opacity: 0;
+    /* JS 依滾動方向切換正負；手機距離在下方 RWD 設定。 */
+    --reveal-distance: 56px;
+    transform: translateY(calc(var(--reveal-distance) * var(--reveal-direction, 1))) scale(.965);
+    transition: opacity 950ms var(--motion-ease), transform 1100ms var(--motion-ease);
+    transition-delay: var(--reveal-delay, 0ms);
+}
+
+.motion-reveal.is-revealed {
+    opacity: 1;
+    transform: none;
+}
+
+.fintech-chapter figure.motion-reveal {
+    clip-path: inset(18% 0 0 0 round 20px);
+    transition: opacity 950ms var(--motion-ease), transform 1100ms var(--motion-ease), clip-path 1200ms var(--motion-ease);
+}
+
+.fintech-chapter figure.is-revealed {
+    clip-path: inset(0 round 0);
+}
+
+.motion-photo {
+    translate: 0 var(--photo-y, 0px);
+}
+
+.home-button,
+.footer-contact-link,
+.carousel-arrow {
+    transition: background-color 220ms ease, color 220ms ease, transform 300ms var(--motion-ease), box-shadow 300ms ease;
+}
+
+.button-arrow {
+    transition: translate 300ms var(--motion-ease);
+}
+
+.carousel-dot::before {
+    transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.carousel-dot[aria-pressed="true"]::before {
+    transform: scale(1.12);
+}
+
+@media (hover:hover) and (pointer:fine) {
+
+    /* 按鈕本身不向上移；整張卡片 Hover 時同步播放箭頭動畫。 */
+    .home-button:hover .button-arrow,
+    .plan-card:hover .button-arrow {
+        translate: 3px -3px;
+    }
+
+    .plan-card.motion-reveal.is-revealed:hover {
+        transform: translateY(-24px);
+        box-shadow: 0 18px 40px #063e3a1f;
+    }
+
+    .footer-contact-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 12px #063e3a24;
+    }
+
+    .learning-card>img {
+        transition: transform 600ms var(--motion-ease);
+    }
+
+    .learning-card:hover>img {
+        transform: scale(1.025);
+    }
+}
+
+.home-button:active,
+.footer-contact-link:active,
+.carousel-arrow:active {
+    transform: scale(.97);
+}
+
+.apply-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 40% 50%, #fce99f50, transparent 65%);
+    opacity: .35;
+    animation: apply-light 12s ease-in-out infinite alternate;
+    animation-play-state: paused;
+}
+
+.apply-section.is-ambient-visible::before {
+    animation-play-state: running;
+}
+
+@keyframes apply-light {
+    to {
+        opacity: .7;
+        transform: translateX(3%);
+    }
+}
+
+@media(max-width:800px) {
+    .motion-reveal {
+        --reveal-distance: 36px;
+        transform: translateY(calc(var(--reveal-distance) * var(--reveal-direction, 1))) scale(.975);
+    }
+
+}
+
+@media(prefers-reduced-motion:reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .motion-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .fintech-chapter figure.motion-reveal {
+        clip-path: none;
+    }
+
+    .motion-photo {
+        translate: none;
+    }
+
+    .apply-section::before {
+        display: none;
+    }
+
+    .home-button,
+    .footer-contact-link,
+    .carousel-arrow,
+    .button-arrow,
+    .carousel-dot::before,
+    .learning-card>img {
+        transition: none;
+    }
+}
+
+
+/* 頁尾應徵按鈕以背景色呈現呼吸感。 */
+@media (prefers-reduced-motion: no-preference) {
+    .apply-content .apply-button:not(:focus-visible) {
+        animation: apply-color-breathe 4s ease-in-out infinite;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .apply-content .apply-button:hover {
+        animation: none;
+    }
+}
+
+@keyframes apply-color-breathe {
+    0%, 100% {
+        background-color: #3CBAAD;
+    }
+
+    50% {
+        background-color: var(--btn-hover);
+    }
+}

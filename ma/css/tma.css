@@ -1,0 +1,30 @@
+/* TMA 五階段培育計畫 */
+@media (min-width: 769px) {
+    .ma-training-grid, .ma-training-periods {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 20px;
+    }
+    .ma-training-periods > div:first-child { grid-column: auto; }
+}
+
+/* 專業領域與學長姊分享的三個頁籤等寬排列 */
+#section-2 .ta-tabs,
+#section-4 .ta-story-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* 徵選流程依五個階段平均分配桌面版寬度 */
+@media (min-width: 769px) {
+    .ma-selection-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+/* 培育計畫插圖 */
+.ma-training .ma-training-image {
+    overflow:hidden;
+    height: 155px;
+}
+
+
+
