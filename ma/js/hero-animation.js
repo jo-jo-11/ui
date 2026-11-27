@@ -1509,14 +1509,17 @@
         // 摺疊外螢幕直向以 466px 為中心，鄰近寬度平順銜接原構圖。
         const foldedOffset = mode === 'phone' && height > width ? clamp(1 - Math.abs(width - 466) / 64, 0, 1) : 0;
         const compactPortrait = width <= 390 && height <= 740 && height > width;
-        // 短窄直向視窗的山體縮放比例，以水平中心和底部為基準。
-        const mountainSize = compactPortrait ? 0.95 : 1;
+        // 手機山體等比縮小後貼齊右緣，底部相對原位置上移 20px。
+        const phoneMountainSize = mode === 'phone' ? 0.8 : 1;
+        const mountainSize = phoneMountainSize * (compactPortrait ? 0.95 : 1);
+        const mountainWidth = mw * mountainSize;
+        const mountainHeight = mh * mountainSize;
         const mountain = {
-            x: mx + 30 * foldedOffset + mw * (1 - mountainSize) / 2,
-            y: my + 28 * foldedOffset + (compactPortrait ? 8 : 0) + mh * (1 - mountainSize),
-            width: mw * mountainSize,
-            height: mh * mountainSize,
-            scale: mw * mountainSize / MOUNTAIN_BOUNDS.width
+            x: mode === 'phone' ? width - mountainWidth : mx,
+            y: my + 28 * foldedOffset + (compactPortrait ? 8 : 0) + mh - mountainHeight - (mode === 'phone' ? 20 : 0),
+            width: mountainWidth,
+            height: mountainHeight,
+            scale: mountainWidth / MOUNTAIN_BOUNDS.width
         };
         const panelWidth = p.panel.width * unit,
             panelHeight = p.panel.height * unit;
@@ -1573,6 +1576,13 @@
         canvas.width = Math.max(1, Math.round(cssWidth * dpr));
         canvas.height = Math.max(1, Math.round(cssHeight * dpr));
         layout = createLayout(cssWidth, cssHeight);
+        // 首頁直向平板以色塊右側留白對齊文字左側。
+        if (layout.mode === 'tablet') {
+            const panelInset = cssWidth - layout.panel.x - layout.panel.width;
+            host.style.setProperty('--hero-panel-inset', `${panelInset}px`);
+        } else {
+            host.style.removeProperty('--hero-panel-inset');
+        }
         worldScale = layout.mountain.scale;
         worldScaleX = 1;
         worldScaleY = 1;
