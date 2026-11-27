@@ -157,10 +157,13 @@ body {
     padding-top: clamp(168px, 14.4444vw, 234px);
 }
 
+.home-main:not(.ma-main) .hero-content {
+    margin-inline-start: var(--hero-panel-inset, auto);
+}
+
 .home-main .hero-content h2 {
     max-width: 650px;
     color: var(--home-ink);
-    font-size: clamp(80px, 8.1944vw, 132px);
     font-weight: 400;
     line-height: 1.08;
     letter-spacing: -5px;
@@ -173,7 +176,6 @@ body {
 .home-main .hero-content .hero-serif {
     color: var(--home-brand);
     font-family: "Roboto Serif", Georgia, serif;
-    font-size: clamp(64px, 6.5278vw, 106px);
     line-height: 1.25;
     letter-spacing: 0;
     font-optical-sizing: auto;
@@ -650,23 +652,13 @@ body {
     background: transparent;
 }
 
-@media (min-width: 1600px) {
-    .home-main .hero-content h2 {
-        font-size: 118px;
-    }
-
-    .home-main .hero-content .hero-serif {
-        font-size: 94px;
-    }
-}
-
 @media (max-width: 1200px) {
     .home-container {
         width: calc(100% - 96px);
     }
 
     .hero-content {
-        padding-top: 170px;
+        padding-top: 20vh;
     }
 
     .plan-grid {
@@ -705,7 +697,7 @@ body {
     }
 
     .home-container {
-        width: calc(100% - 64px);
+        width: calc(100% - 100px);
     }
 
     .home-hero {
@@ -714,7 +706,8 @@ body {
     }
 
     .hero-content {
-        padding-top: 150px;
+        padding-top: clamp(75px, calc(14vh - 4px), 150px);
+
     }
 
     .home-main .hero-content h2 {
@@ -829,6 +822,16 @@ body {
     }
 }
 
+@media (min-width: 900px) {
+    .home-main .hero-content h2 {
+        font-size: clamp(70px, calc(25px + 5vw), 112px);
+    }
+
+    .home-main .hero-content .hero-serif {
+        font-size: clamp(60px, calc(37px + 3vw), 80px);
+    }
+}
+
 @media (max-width: 680px) {
     .learning-track {
         --learning-card-inset: 30px;
@@ -902,7 +905,7 @@ body {
     }
 
     .hero-content {
-        padding-top: 100px;
+        padding-top: clamp(70px, calc(27.03vh - 100.3px), 170px);
     }
 
     .home-main .hero-content h2 {

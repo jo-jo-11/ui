@@ -77,10 +77,7 @@
     padding-left: 1.5em;
 }
 
-/* 首屏只調整文字組合，保留既有 Canvas 與進場。 */
-.ma-main .hero-content {
-    padding-top: clamp(220px, 22.3vw, 350px);
-}
+
 
 .ma-main .hero-content h2 {
     font-size: 112px;
@@ -888,9 +885,6 @@
         margin-top: 24px;
     }
 
-    .ma-main .hero-content {
-        padding-top: 180px;
-    }
 
     .ma-main .hero-content h2 {
         font-size: 90px;
@@ -912,7 +906,7 @@
     }
 
     .ma-main .hero-content {
-        padding-top: 140px;
+        padding-top: clamp(70px, calc(49vh - 247px), 210px);
     }
 
     .ma-main .hero-content h2 {
